@@ -28,32 +28,25 @@ Here's how you can do it:
 
 Open your shell's startup file: This file is typically located in your home directory. If you are using Bash, it’s usually .bashrc or .bash_profile. If you're using Zsh (common in newer macOS versions), it’s .zshrc.
 
-For Bash on Linux or macOS:
+Add the path of the go-bin to make available cobra-cli on the os:
+```bash
+echo $(go env GOPATH)/bin
+/eltio/go/bin --> path of go bin
+```
+Then go to the .zshrc or .bashrc file, save and close the file.
+
+For Linux:
 ```bash
 nano ~/.bashrc
 ```
-
-For Bash on macOS (if you use .bash_profile):
+or
 ```bash
 nano ~/.bash_profile
 ```
-
 For Zsh (common on newer macOS versions):
 ```bash
 nano ~/.zshrc
 ```
-
-Add the export command to the file: At the end of the file, add the following line:
-```bash
-export GOBIN=~/go/bin
-export PATH=$PATH:$GOBIN
-```
-
-Replace $GOBIN with the actual path to your Go binaries if it's not already set as an environment variable. You can do it using:
-```bash
-echo $(go env GOPATH)/bin
-```
-Then go to the .zshrc or .bashrc file, save and close the file.
 
 Apply the changes: For the changes to take effect, you need to reload the startup file. You can do this by either restarting your terminal or sourcing the file with one of the following commands:
 
@@ -72,7 +65,7 @@ source ~/.zshrc
 After doing this, the cobra-cli command should be available in all new terminal sessions. This way, the PATH update becomes a permanent part of your shell configuration.
 
 
-# Cobra cli usage
+# Packages and cobra cli usage
 
 - Only to initialize the repo go mod init github.com/eltiocaballoloco/sinaloa-cli
 - go install github.com/spf13/cobra-cli@latest
