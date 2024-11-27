@@ -45,7 +45,7 @@ new-cmd:
 	./scripts/create_cmd.sh $(cmd) $(subcmd) "$(PKG)/cmd/$(cmd)" "$(flags)"
 
 # Add a new subcommand
-# Example make new_sub cmd=storj subcmd=put flags="msg:msg:m:Message to receive:true:|path:path:p:Path where you want store the file on storj bucket:true:"
+# Example make new-sub cmd=storj subcmd=put flags="msg:msg:m:Message to receive:true:|path:path:p:Path where you want store the file on storj bucket:true:"
 new-sub:
 	chmod +x ./scripts/create_sub.sh
 	./scripts/create_sub.sh $(cmd) $(subcmd) "$(PKG)/cmd/$(cmd)" "$(flags)"

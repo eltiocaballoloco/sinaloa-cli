@@ -3,19 +3,20 @@ package cmd
 import (
 	"os"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/api"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/env"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/haproxy"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/storj"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/version"
 	"github.com/spf13/cobra"
+    "github.com/eltiocaballoloco/sinaloa-cli/cmd/vault"
+
+	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net"
+	"github.com/eltiocaballoloco/sinaloa-cli/cmd/version"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "sinaloa",
 	Short: "The sinaloa cli",
 	Long:  `The sinaloa cli`,
+	CompletionOptions: cobra.CompletionOptions{
+		DisableDefaultCmd: true, // Disable the "completion" command
+	},
 }
 
 func Execute() {
@@ -26,11 +27,8 @@ func Execute() {
 }
 
 func addSubcommandPalettes() {
-	rootCmd.AddCommand(haproxy.HaproxyCmd)
-	rootCmd.AddCommand(storj.StorjCmd)
-	rootCmd.AddCommand(env.EnvCmd)
+    rootCmd.AddCommand(vault.VaultCmd)
 	rootCmd.AddCommand(net.NetCmd)
-	rootCmd.AddCommand(api.ApiCmd)
 	rootCmd.AddCommand(version.VersionCmd)
 }
 

@@ -9,8 +9,11 @@ SUBCMD=$2
 PACKAGE_PATH=$3
 FLAGS=$4
 
-CMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${CMD:0:1})${CMD:1}"
-SUBCMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${SUBCMD:0:1})${SUBCMD:1}"
+# Remove hyphens and capitalize
+CMD_CLEANED="${CMD//-/}" # Remove "-" for name like set-secret
+CMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${CMD_CLEANED:0:1})${CMD_CLEANED:1}"
+SUBCMD_CLEANED="${SUBCMD//-/}" # Remove "-" for name like set-secret
+SUBCMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${SUBCMD_CLEANED:0:1})${SUBCMD_CLEANED:1}"
 
 CMD_DIR=./cmd/$CMD
 SUB_DIR=$CMD_DIR/sub

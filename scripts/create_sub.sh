@@ -23,6 +23,10 @@ import (
 var (
 EOF
 
+# Remove hyphens and capitalize
+SUBCMD_CLEANED="${SUBCMD//-/}" # Remove "-" for name like set-secret
+SUBCMD="$(tr '[:lower:]' '[:upper:]' <<< ${SUBCMD_CLEANED:0:1})${SUBCMD_CLEANED:1}"
+
 IFS=':' read -ra FLAG_ARRAY <<< "$FLAGS"
 for FLAG in "${FLAG_ARRAY[@]}"; do
     IFS='|' read -ra FLAG_PARTS <<< "$FLAG"
