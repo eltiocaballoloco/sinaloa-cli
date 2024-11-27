@@ -49,9 +49,11 @@ export GOBIN=~/go/bin
 export PATH=$PATH:$GOBIN
 ```
 
-Replace $GOBIN with the actual path to your Go binaries if it's not already set as an environment variable. You can do it using: "echo $(go env GOPATH)/bin".
-
-Save and close the file: If you’re using nano, you can do this by pressing Ctrl + O, Enter, and then Ctrl + X.
+Replace $GOBIN with the actual path to your Go binaries if it's not already set as an environment variable. You can do it using:
+```bash
+echo $(go env GOPATH)/bin
+```
+Then go to the .zshrc or .bashrc file, save and close the file.
 
 Apply the changes: For the changes to take effect, you need to reload the startup file. You can do this by either restarting your terminal or sourcing the file with one of the following commands:
 
