@@ -1,15 +1,13 @@
 package sub
 
 import (
-	"encoding/json"
 	"fmt"
-	"net"
 	"net/http"
 	"time"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/models/messages/errors"
-	"github.com/eltiocaballoloco/sinaloa-cli/models/messages/response"
 	"github.com/spf13/cobra"
+
+	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net/controller"
 )
 
 var urlPath string
@@ -22,61 +20,21 @@ var PingCmd = &cobra.Command{
 	Short: "This command is used to ping a url or an ip address",
 	Long:  `This command is used to ping a url or an ip address. Return 200 if ping it is ok otherwise error. Example: sinaloa net ping -u google.com`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if statusCode, err := ping(urlPath); err != nil {
-			errorMessage := fmt.Sprintf("Ping error: %s", err.Error())
-			errorResponse := errors.NewErrorResponse(false, "500", errorMessage)
-			errorJsonResponse, jsonErr := json.MarshalIndent(errorResponse, "", "  ")
-			if jsonErr != nil {
-				fmt.Println("Error marshaling JSON:", jsonErr)
-				return
-			}
-			fmt.Println(string(errorJsonResponse))
+		// Call the Ping controller
+		result, err := controller.Ping(urlPath)
+		if err != nil {
+			// Print the error response
+			fmt.Printf("[Error] %v\n", err)
+			fmt.Println(string(result))
 			return
-		} else {
-			successData := struct {
-				StatusCode int `json:"status_code"`
-			}{
-				StatusCode: statusCode,
-			}
-			successResponse := response.NewResponse(true, "200", "Ping successful", successData)
-			jsonResponse, jsonErr := json.MarshalIndent(successResponse, "", "  ")
-			if jsonErr != nil {
-				fmt.Println("Error marshaling JSON:", jsonErr)
-				return
-			}
-			fmt.Println(string(jsonResponse))
 		}
+		// Print the success response
+		fmt.Println(string(result))
 	},
 }
 
-func ping(target string) (int, error) {
-	var url string
-
-	// Check if the target is an IP address
-	if ip := net.ParseIP(target); ip != nil {
-		// It's an IP address, so use it directly for pinging
-		url = "http://" + target
-	} else {
-		// It's not an IP address, assume it's a domain name
-		url = "http://" + target
-	}
-
-	req, err := http.NewRequest("HEAD", url, nil)
-	if err != nil {
-		return 0, err
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return 0, err
-	}
-	defer resp.Body.Close()
-
-	return resp.StatusCode, nil
-}
-
 func init() {
-	PingCmd.Flags().StringVarP(&urlPath, "url", "u", "", "The url to ping")
+	PingCmd.Flags().StringVarP(&urlPath, "url", "u", "", "the url to ping, eg. google.com")
 	if err := PingCmd.MarkFlagRequired("url"); err != nil {
 		fmt.Println(err)
 	}
