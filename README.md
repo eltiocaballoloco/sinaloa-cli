@@ -18,7 +18,7 @@ export GOBIN=~/go/bin
 export PATH=$PATH:$GOBIN
 ```
 
-# Fix inside env. cobra-cli and go path
+# Fix inside env cobra-cli and go path
 
 To ensure that the cobra-cli command remains available even after restarting your PC, you need to add the path to the executable to your system's PATH environment variable permanently. The command export PATH=$PATH:$GOBIN you're using only sets the PATH for the current terminal session. Once the terminal is closed or the PC is restarted, this setting is lost.
 
