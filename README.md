@@ -49,7 +49,7 @@ export GOBIN=~/go/bin
 export PATH=$PATH:$GOBIN
 ```
 
-Replace $GOBIN with the actual path to your Go binaries if it's not already set as an environment variable (you can do it using: "echo $(go env GOPATH)/bin").
+Replace $GOBIN with the actual path to your Go binaries if it's not already set as an environment variable. You can do it using: "echo $(go env GOPATH)/bin".
 
 Save and close the file: If you’re using nano, you can do this by pressing Ctrl + O, Enter, and then Ctrl + X.
 
