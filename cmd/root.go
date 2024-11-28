@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-    "github.com/eltiocaballoloco/sinaloa-cli/cmd/vault"
 
+	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure"
 	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net"
 	"github.com/eltiocaballoloco/sinaloa-cli/cmd/version"
 )
@@ -27,7 +27,7 @@ func Execute() {
 }
 
 func addSubcommandPalettes() {
-    rootCmd.AddCommand(vault.VaultCmd)
+	rootCmd.AddCommand(azure.AzureCmd)
 	rootCmd.AddCommand(net.NetCmd)
 	rootCmd.AddCommand(version.VersionCmd)
 }
