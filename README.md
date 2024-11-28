@@ -69,12 +69,12 @@ After doing this, the cobra-cli command should be available in all new terminal 
 
 - Only to initialize the repo go mod init github.com/eltiocaballoloco/sinaloa-cli
 - go install github.com/spf13/cobra-cli@latest
-- go get -u github.com/ricochet2200/go-disk-usage/du
-- go get -u github.com/ricochet2200/go-disk-usage
-- go get -u storj.io/uplink
 - go get github.com/stretchr/testify/assert
 - go get github.com/stretchr/testify/mock
 - go get gopkg.in/yaml.v2
+- go get github.com/microsoftgraph/msgraph-sdk-go@v1.53.0
+- go get github.com/microsoft/kiota-http-go@v1.4.5
+- go get github.com/Azure/azure-sdk-for-go/sdk/azidentity@v1.8.0
 - cobra-cli init <cli_name> (to create cli)
 - cobra-cli add <name_cmd> (to create a new command)
 
@@ -83,10 +83,6 @@ After doing this, the cobra-cli command should be available in all new terminal 
 
 - Install required
 - Install deps
-
-
-# Debug usage
-
 
 
 # Makefile
@@ -98,8 +94,9 @@ After doing this, the cobra-cli command should be available in all new terminal 
 It is necessary create an .env file:
 
 ```bash
-SINALOA_CLI_DEBUG="false" # true or false
-STORJ_SECRET="YOUR_SECRET" # Storj secret
+AZURE_TENANT_ID="xxx-yyyy-tttt-1234"
+AZURE_CLIENT_ID="xxx-yyyy-tttt-1234"
+AZURE_CLIENT_SECRET="xxx-yyyy-tttt-1234"
 ```
 
 Now you can do:

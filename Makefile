@@ -15,7 +15,7 @@ build:
 		mkdir -p "$$folder"; \
 	fi; \
 	mv "$$file" "$$folder/"
-	mv "build/sinaloa" "/usr/local/bin/sinaloa"
+	cp "build/sinaloa" "/usr/local/bin/sinaloa"
 
 # Clean build artifacts
 build-clean:
@@ -34,10 +34,6 @@ mod-tidy:
 test:
 	@cd tests && $(GO) test ./...
 
-# Add env vars from .env file
-add-env:
-	@cd scripts && chmod +x ./set_env_var.sh && . set_env_var.sh
-
 # Add a new command with a subcommand and dynamically add flags
 # Example: make new-cmd cmd=storj subcmd=add flags="secret:secret:s:Storj secret to connect within:true:|path:path:p:Path where you want store the file on storj bucket:true:|file:file:f:Path of the file where is located:true:"
 new-cmd:
@@ -50,9 +46,5 @@ new-sub:
 	chmod +x ./scripts/create_sub.sh
 	./scripts/create_sub.sh $(cmd) $(subcmd) "$(PKG)/cmd/$(cmd)" "$(flags)"
 
-# Set the version of the project, used only to generate thefinal build of the cli
-set-version:
-	chmod +x ./scripts/set_version.sh
-	./scripts/set_version.sh
 
-.PHONY: all build test clean deps new-cmd new-sub set-version
+.PHONY: all build test clean deps new-cmd new-sub
