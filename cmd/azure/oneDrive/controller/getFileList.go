@@ -8,18 +8,20 @@ import (
 	msgraphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 )
 
-func GetFileList(path string) ([]string, error) {
+func GetFileList(path string, userId string) ([]string, error) {
 	// Initialize the GraphServiceClient
 	graphClient, err := shared.NewGraphClient()
 	if err != nil {
 		return nil, fmt.Errorf("error initializing Graph client: %w", err)
 	}
 
+	fmt.Printf("Debug: path='%s'\n", path)
+
 	// Construct the full URL for the folder
-	fullPath := fmt.Sprintf("https://graph.microsoft.com/v1.0/me/drive/root:/%s:/children", path)
+	fullPath := fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s/drive/root:/%s:/children", userId, path)
 
 	// Use WithUrl to fetch the folder contents
-	request := graphClient.Me().Drive().WithUrl(fullPath)
+	request := graphClient.Drives().WithUrl(fullPath)
 	response, err := request.Get(context.Background(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching children for path '%s': %w", path, err)
