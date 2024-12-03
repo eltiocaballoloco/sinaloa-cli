@@ -18,5 +18,6 @@ var OnedriveCmd = &cobra.Command{
 
 func init() {
 	// Add subcommands to the OneDrive command
+	OnedriveCmd.AddCommand(sub.GetfileOnedriveCmd)
 	OnedriveCmd.AddCommand(sub.GetfileListOnedriveCmd)
 }
