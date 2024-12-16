@@ -21,13 +21,7 @@ var PingCmd = &cobra.Command{
 	Long:  `This command is used to ping a url or an ip address. Return 200 if ping it is ok otherwise error. Example: sinaloa net ping -u google.com`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// Call the Ping controller
-		result, err := controller.Ping(urlPath)
-		if err != nil {
-			// Print the error response
-			fmt.Printf("[Error] %v\n", err)
-			fmt.Println(string(result))
-			return
-		}
+		result, _ := controller.Ping(urlPath)
 		// Print the success response
 		fmt.Println(string(result))
 	},

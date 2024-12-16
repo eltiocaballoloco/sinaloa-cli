@@ -10,7 +10,6 @@ import (
 func GetFileList(path string) ([]byte, error) {
 	// Call the GetDriveItems function from the backend
 	apiResponse, err := be.GetDriveItems(path)
-
 	// Handle the response
 	return helpers.HandleController(
 		apiResponse.Response,

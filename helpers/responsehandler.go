@@ -37,7 +37,7 @@ func HandleController(result bool, statusCode string, message string, controller
 		}
 		return jsonResponse, err
 	} else {
-		fmt.Printf("[Error] %v\n", err)
+		fmt.Printf("[Error] An error occurred in the controller", controllerFunction, ": %v\n", err)
 		errorResponse := errors.NewErrorResponse(result, statusCode, message)
 		errorJsonResponse, jsonErr := json.MarshalIndent(errorResponse, "", "  ")
 		if jsonErr != nil {
