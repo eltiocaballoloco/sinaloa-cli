@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure/oneDrive/controller"
-	"github.com/eltiocaballoloco/sinaloa-cli/helpers"
 )
 
 var (
@@ -18,21 +17,10 @@ var GetfileListOnedriveCmd = &cobra.Command{
 	Short: "Get a list of file and folders from one drive",
 	Long:  "Get a list of file and folders from one drive",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Load configuration from .env
-		helpers.LoadConfig()
-
 		// Call the controller's GetFileList function
-		fileList, err := controller.GetFileList(path, helpers.AppConfig.AZURE_OBJECT_ID)
-		if err != nil {
-			fmt.Printf("Error: %s\n", err)
-			return
-		}
-
-		// Print the list of files and folders
-		fmt.Println("Files and Folders in OneDrive:")
-		for _, item := range fileList {
-			fmt.Println(item)
-		}
+		result, _ := controller.GetFileList(path)
+		// Print the response
+		fmt.Println(string(result))
 	},
 }
 

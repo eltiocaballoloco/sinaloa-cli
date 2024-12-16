@@ -37,13 +37,13 @@ func (g *GraphClient) initializeGraphForAppAuth() error {
 	clientSecret := helpers.AppConfig.AZURE_CLIENT_SECRET
 
 	if clientId == "" || tenantId == "" || clientSecret == "" {
-		return fmt.Errorf("missing required environment variables: CLIENT_ID, TENANT_ID, or CLIENT_SECRET")
+		return fmt.Errorf("Graph Client is missing required environment variables: AZURE_CLIENT_ID, AZURE_TENANT_ID, or AZURE_CLIENT_SECRET")
 	}
 
 	// Initialize Azure Identity credential
 	credential, err := azidentity.NewClientSecretCredential(tenantId, clientId, clientSecret, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create client secret credential: %w", err)
+		return fmt.Errorf("On Graph Client failed to create client secret credential: %w", err)
 	}
 
 	g.clientSecretCredential = credential
@@ -53,13 +53,13 @@ func (g *GraphClient) initializeGraphForAppAuth() error {
 		"https://graph.microsoft.com/.default",
 	})
 	if err != nil {
-		return fmt.Errorf("failed to create auth provider: %w", err)
+		return fmt.Errorf("On Graph Client failed to create auth provider: %w", err)
 	}
 
 	// Create a request adapter
 	adapter, err := msgraphsdk.NewGraphRequestAdapter(authProvider)
 	if err != nil {
-		return fmt.Errorf("failed to create request adapter: %w", err)
+		return fmt.Errorf("On Graph Client failed to create request adapter: %w", err)
 	}
 
 	// Initialize GraphServiceClient
