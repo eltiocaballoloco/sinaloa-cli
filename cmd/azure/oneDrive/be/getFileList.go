@@ -78,5 +78,5 @@ func GetDriveItems(path string) (models.ApiResponse, error) {
 		return models.NewApiResponse(false, 500, nil, "GetDriveItems, internal error marshalling oneDive items to JSON", nil), err
 	}
 
-	return models.NewApiResponse(true, 200, nil, "Data obtained from oen drive", itemsJson), nil
+	return models.NewApiResponse(true, 200, nil, "Data obtained from onedrive", itemsJson), nil
 }
