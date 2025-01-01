@@ -1,5 +1,9 @@
 package azure
 
+import (
+	"encoding/json"
+)
+
 // ApiResponse encapsulates the common properties of an API response.
 type OneDriveGraphResponseApiModel struct {
 	ODataContext string              `json:"@odata.context"`
@@ -26,6 +30,7 @@ type OneDriveItemModel struct {
 	File                      *File           `json:"file"`
 	Shared                    *Shared         `json:"shared"`
 	MicrosoftGraphDownloadUrl string          `json:"@microsoft.graph.downloadUrl,omitempty"`
+	DownloadUrl               string          `json:"downloadUrl,omitempty"`
 	Type                      string          `json:"type"`
 }
 
@@ -64,4 +69,25 @@ type Hashes struct {
 // Shared details about the sharing status of the item.
 type Shared struct {
 	Scope string `json:"scope"`
+}
+
+// Custom UnmarshalJSON method for OneDriveItemModel
+func (o *OneDriveItemModel) UnmarshalJSON(data []byte) error {
+	// Create an alias to avoid recursion
+	type Alias OneDriveItemModel
+	aux := &struct {
+		MicrosoftGraphDownloadUrl string `json:"@microsoft.graph.downloadUrl"` // Original field name from API
+		*Alias
+	}{
+		Alias: (*Alias)(o),
+	}
+
+	// Unmarshal the JSON into the auxiliary struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Map the original field to the renamed field
+	o.DownloadUrl = aux.MicrosoftGraphDownloadUrl
+	return nil
 }

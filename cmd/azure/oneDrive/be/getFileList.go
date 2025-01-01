@@ -40,9 +40,9 @@ func GetDriveItems(path string) (models.ApiResponse, error) {
 
 	// Set the full endpoint URL using the object ID and path
 	if path == "." {
-		endpoint = fmt.Sprintf("%s%s/drive/root/children", apiClient.BaseURL, helpers.AppConfig.AZURE_OBJECT_ID)
+		endpoint = fmt.Sprintf("%s/drive/root/children", helpers.AppConfig.AZURE_OBJECT_ID)
 	} else {
-		endpoint = fmt.Sprintf("%s%s/drive/root:/%s:/children", apiClient.BaseURL, helpers.AppConfig.AZURE_OBJECT_ID, path)
+		endpoint = fmt.Sprintf("%s/drive/root:/%s:/children", helpers.AppConfig.AZURE_OBJECT_ID, path)
 	}
 
 	// Use the existing request method from ApiClient to make the GET request
