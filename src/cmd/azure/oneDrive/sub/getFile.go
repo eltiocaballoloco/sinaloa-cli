@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure/oneDrive/controller"
 )
 
 var (
@@ -16,7 +18,10 @@ var GetfileOnedriveCmd = &cobra.Command{
 	Short: "Get a file from one drive",
 	Long:  "Get a file from one drive",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Executing get-file in one-drive")
+		// Call the controller's GetFileList function
+		result, _ := controller.GetFile(file, path_to_store)
+		// Print the response
+		fmt.Println(string(result))
 	},
 }
 

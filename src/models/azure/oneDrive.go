@@ -89,5 +89,6 @@ func (o *OneDriveItemModel) UnmarshalJSON(data []byte) error {
 
 	// Map the original field to the renamed field
 	o.DownloadUrl = aux.MicrosoftGraphDownloadUrl
+
 	return nil
 }

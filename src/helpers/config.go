@@ -10,7 +10,7 @@ type Config struct {
 	AZURE_TENANT_ID     string
 	AZURE_CLIENT_ID     string
 	AZURE_CLIENT_SECRET string
-	AZURE_OBJECT_ID     string
+	AZURE_DRIVE_ID      string
 }
 
 var (
@@ -29,6 +29,6 @@ func LoadConfig() {
 		AZURE_TENANT_ID:     os.Getenv("AZURE_TENANT_ID"),
 		AZURE_CLIENT_ID:     os.Getenv("AZURE_CLIENT_ID"),
 		AZURE_CLIENT_SECRET: os.Getenv("AZURE_CLIENT_SECRET"),
-		AZURE_OBJECT_ID:     os.Getenv("AZURE_OBJECT_ID"),
+		AZURE_DRIVE_ID:      os.Getenv("AZURE_DRIVE_ID"),
 	}
 }

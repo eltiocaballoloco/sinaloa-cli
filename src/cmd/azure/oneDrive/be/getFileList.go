@@ -35,14 +35,14 @@ func GetDriveItems(path string) (models.ApiResponse, error) {
 	}
 
 	// Initialize the ApiClient with the Microsoft Graph API base URL, access token, and Bearer auth type
-	baseURL := "https://graph.microsoft.com/v1.0/"
+	baseURL := "https://graph.microsoft.com/v1.0/drives/"
 	apiClient := helpers.NewApiClient(baseURL, accessToken, "Bearer")
 
-	// Set the full endpoint URL using the object ID and path
+	// Set the full endpoint URL using the DRIVE ID and path
 	if path == "." {
-		endpoint = fmt.Sprintf("%s/drive/root/children", helpers.AppConfig.AZURE_OBJECT_ID)
+		endpoint = fmt.Sprintf("%s/root/children", helpers.AppConfig.AZURE_DRIVE_ID)
 	} else {
-		endpoint = fmt.Sprintf("%s/drive/root:/%s:/children", helpers.AppConfig.AZURE_OBJECT_ID, path)
+		endpoint = fmt.Sprintf("%s/root:/%s:/children", helpers.AppConfig.AZURE_DRIVE_ID, path)
 	}
 
 	// Use the existing request method from ApiClient to make the GET request
@@ -59,8 +59,8 @@ func GetDriveItems(path string) (models.ApiResponse, error) {
 	for _, item := range apiGraph.Value {
 		if item.Folder != nil {
 			item.Type = "folder"
-		} else if item.File != nil {
-			item.Type = "doc"
+		} else {
+			item.Type = "item"
 		}
 		// Concatenate path with name
 		item.ParentReference.Path = fmt.Sprintf("%s/%s", item.ParentReference.Path, item.Name)
