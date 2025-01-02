@@ -15,11 +15,11 @@ CMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${CMD_CLEANED:0:1})${CMD_CLEANED:1}"
 SUBCMD_CLEANED="${SUBCMD//-/}" # Remove "-" for name like set-secret
 SUBCMD_CAP="$(tr '[:lower:]' '[:upper:]' <<< ${SUBCMD_CLEANED:0:1})${SUBCMD_CLEANED:1}"
 
-CMD_DIR=./cmd/$CMD
+CMD_DIR=./src/cmd/$CMD
 SUB_DIR=$CMD_DIR/sub
 CMD_FILE=$CMD_DIR/$CMD.go
 SUB_FILE=$SUB_DIR/$SUBCMD.go
-ROOT_FILE=./cmd/root.go
+ROOT_FILE=./src/cmd/root.go
 
 mkdir -p $CMD_DIR $SUB_DIR
 

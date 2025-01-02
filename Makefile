@@ -38,13 +38,13 @@ test:
 # Example: make new-cmd cmd=storj subcmd=add flags="secret:secret:s:Storj secret to connect within:true:|path:path:p:Path where you want store the file on storj bucket:true:|file:file:f:Path of the file where is located:true:"
 new-cmd:
 	chmod +x ./scripts/create_cmd.sh
-	./scripts/create_cmd.sh $(cmd) $(subcmd) "$(PKG)/cmd/$(cmd)" "$(flags)"
+	./scripts/create_cmd.sh $(cmd) $(subcmd) "$(PKG)/src/cmd/$(cmd)" "$(flags)"
 
 # Add a new subcommand
 # Example make new-sub cmd=storj subcmd=put flags="msg:msg:m:Message to receive:true:|path:path:p:Path where you want store the file on storj bucket:true:"
 new-sub:
 	chmod +x ./scripts/create_sub.sh
-	./scripts/create_sub.sh $(cmd) $(subcmd) "$(PKG)/cmd/$(cmd)" "$(flags)"
+	./scripts/create_sub.sh $(cmd) $(subcmd) "$(PKG)/src/cmd/$(cmd)" "$(flags)"
 
 
 .PHONY: all build test clean deps new-cmd new-sub

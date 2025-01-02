@@ -10,7 +10,7 @@ import (
 var AzureCmd = &cobra.Command{
 	Use:   "azure",
 	Short: "Azure-related commands",
-	Long:  "Commands to manage Azure services such as OneDrive, storage, etc.",
+	Long:  "Commands to manage Azure services such as OneDrive, office365, azure resources, etc.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help() // Show help if no subcommands are provided
 	},

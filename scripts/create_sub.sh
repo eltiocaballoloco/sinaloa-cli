@@ -7,8 +7,8 @@ PACKAGE_REF=$3
 FLAGS=$4
 
 # Create the sub-command
-mkdir -p "$CMD/sub"
-SUBCMD_FILE="$CMD/sub/$SUBCMD.go"
+mkdir -p "./src/$CMD/sub"
+SUBCMD_FILE="./src/$CMD/sub/$SUBCMD.go"
 touch "$SUBCMD_FILE"
 
 # Construct the sub-command file
