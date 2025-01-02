@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/models"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models"
 )
 
 // APIClient handles HTTP requests with support for different authentication methods.

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net/be"
-	"github.com/eltiocaballoloco/sinaloa-cli/helpers"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net/be"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
 )
 
 var client = &http.Client{

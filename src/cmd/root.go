@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net"
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/version"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/version"
 )
 
 var rootCmd = &cobra.Command{

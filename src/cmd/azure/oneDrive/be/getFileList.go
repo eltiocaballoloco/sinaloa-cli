@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure/shared"
-	"github.com/eltiocaballoloco/sinaloa-cli/helpers"
-	"github.com/eltiocaballoloco/sinaloa-cli/models"
-	"github.com/eltiocaballoloco/sinaloa-cli/models/azure"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure/shared"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/azure"
 )
 
 // GetDriveItems uses the helpers.ApiClient to request items from a specific path in OneDrive

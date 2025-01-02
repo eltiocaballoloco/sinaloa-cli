@@ -3,8 +3,8 @@ package controller
 import (
 	"fmt"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure/oneDrive/be"
-	"github.com/eltiocaballoloco/sinaloa-cli/helpers"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure/oneDrive/be"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
 )
 
 func GetFileList(path string) ([]byte, error) {

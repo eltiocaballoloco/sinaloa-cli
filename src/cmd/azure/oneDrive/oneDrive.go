@@ -3,7 +3,7 @@ package oneDrive
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/azure/oneDrive/sub"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure/oneDrive/sub"
 )
 
 // OnedriveCmd represents the one-drive command

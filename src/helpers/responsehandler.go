@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/models/messages/errors"
-	"github.com/eltiocaballoloco/sinaloa-cli/models/messages/response"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/messages/errors"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/messages/response"
 )
 
 func HandleResponse(message string, code string, data interface{}) []byte {

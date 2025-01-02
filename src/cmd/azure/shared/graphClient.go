@@ -7,7 +7,7 @@ import (
 	auth "github.com/microsoft/kiota-authentication-azure-go"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/helpers"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
 )
 
 type GraphClient struct {

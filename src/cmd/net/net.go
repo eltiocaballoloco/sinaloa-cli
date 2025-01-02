@@ -1,7 +1,7 @@
 package net
 
 import (
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net/sub"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net/sub"
 	"github.com/spf13/cobra"
 )
 

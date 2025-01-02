@@ -1,7 +1,7 @@
 # Go variables
 GO := go
 PKG := github.com/eltiocaballoloco/sinaloa-cli
-MAIN_FILE := main.go
+MAIN_FILE := src/main.go
 
 # Main target
 all: build

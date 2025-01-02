@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/cmd/net/controller"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net/controller"
 )
 
 var urlPath string

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eltiocaballoloco/sinaloa-cli/models/messages/errors"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/messages/errors"
 )
 
 // HandleResponseError simplifies the creation and display of JSON-formatted error messages
