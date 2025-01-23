@@ -18,7 +18,7 @@ var UploadFileOnedriveCmd = &cobra.Command{
 	Short: "Upload a file to onedrive",
 	Long:  "Upload a file to onedrive",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Call the controller's GetFileList function
+		// Call the controller's UploadFile function
 		result, _ := controller.UploadFile(file_path_to_upload, upload_path)
 		// Print the response
 		fmt.Println(string(result))
