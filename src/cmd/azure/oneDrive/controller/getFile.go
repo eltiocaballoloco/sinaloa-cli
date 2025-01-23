@@ -22,7 +22,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 	// Call the GetDriveItems function from the backend
 	apiResponse, err := be.GetDriveItems(directoryPath)
 	if err != nil {
-		return helpers.HandleController(
+		return helpers.HandleControllerApi(
 			false,
 			"500",
 			"Failed to fetch items",
@@ -36,7 +36,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 	var rawData map[string]interface{}
 	err = json.Unmarshal(apiResponse.Body, &rawData)
 	if err != nil {
-		return helpers.HandleController(
+		return helpers.HandleControllerApi(
 			false,
 			"500",
 			"Failed to parse JSON",
@@ -49,7 +49,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 	// Extract the "values" key from the parsed JSON
 	values, ok := rawData["values"].([]interface{})
 	if !ok {
-		return helpers.HandleController(
+		return helpers.HandleControllerApi(
 			false,
 			"404",
 			"No items found in the response",
@@ -71,7 +71,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 		if item["name"] == requiredName && item["type"] == "item" {
 			// If "no_store", return the file metadata
 			if pathToSaveFile == "no_store" {
-				return helpers.HandleController(
+				return helpers.HandleControllerApi(
 					apiResponse.Response,
 					fmt.Sprintf("%d", apiResponse.StatusCode),
 					"File metadata retrieved successfully",
@@ -84,7 +84,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 			// Otherwise, download the file
 			downloadUrl, ok := item["downloadUrl"].(string)
 			if !ok || downloadUrl == "" {
-				return helpers.HandleController(
+				return helpers.HandleControllerApi(
 					false,
 					"404",
 					fmt.Sprintf("File '%s' does not have a download URL", requiredName),
@@ -96,7 +96,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 
 			err := DownloadFile(downloadUrl, pathToSaveFile)
 			if err != nil {
-				return helpers.HandleController(
+				return helpers.HandleControllerApi(
 					false,
 					"500",
 					"Failed to download file",
@@ -107,7 +107,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 			}
 
 			// Return success message
-			return helpers.HandleController(
+			return helpers.HandleControllerApi(
 				apiResponse.Response,
 				fmt.Sprintf("%d", apiResponse.StatusCode),
 				"File downloaded successfully",
@@ -119,7 +119,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 	}
 
 	// If no match is found, return a structured error response
-	return helpers.HandleController(
+	return helpers.HandleControllerApi(
 		false,
 		"404",
 		fmt.Sprintf("File with name '%s' not found in path '%s'", requiredName, path),

@@ -35,7 +35,7 @@ func GetDriveItems(path string) (models.ApiResponse, error) {
 	}
 
 	// Initialize the ApiClient with the Microsoft Graph API base URL, access token, and Bearer auth type
-	baseURL := "https://graph.microsoft.com/v1.0/drives/"
+	baseURL := graphApiClient.BaseURL + "drives/"
 	apiClient := helpers.NewApiClient(baseURL, accessToken, "Bearer")
 
 	// Set the full endpoint URL using the DRIVE ID and path

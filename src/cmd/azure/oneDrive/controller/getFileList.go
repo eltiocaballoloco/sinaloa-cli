@@ -11,7 +11,7 @@ func GetFileList(path string) ([]byte, error) {
 	// Call the GetDriveItems function from the backend
 	apiResponse, err := be.GetDriveItems(path)
 	// Handle the response
-	return helpers.HandleController(
+	return helpers.HandleControllerApi(
 		apiResponse.Response,
 		fmt.Sprintf("%d", apiResponse.StatusCode),
 		apiResponse.Message,

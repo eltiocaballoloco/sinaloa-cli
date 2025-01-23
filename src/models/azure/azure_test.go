@@ -2,6 +2,7 @@ package azure_test
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/src/models/azure"
@@ -101,4 +102,34 @@ func TestOneDriveWrapperModel(t *testing.T) {
 	assert.Len(t, wrapper.Values, 1, "Wrapper values should have one item")
 	assert.Equal(t, "12345", wrapper.Values[0].ID, "ID of first item should match")
 	assert.Equal(t, "testfile.txt", wrapper.Values[0].Name, "Name of first item should match")
+}
+
+func TestOneDriveUploadSessionModel_UnmarshalJSON(t *testing.T) {
+	// Sample JSON response
+	jsonResponse := `{
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#microsoft.graph.uploadSession",
+        "expirationDateTime": "2025-01-23T17:37:05.007Z",
+        "nextExpectedRanges": ["0-"],
+        "uploadUrl": "https://example.com/upload"
+    }`
+
+	// Expected struct
+	expected := azure.OneDriveUploadSessionModel{
+		ODataContext:       "https://graph.microsoft.com/v1.0/$metadata#microsoft.graph.uploadSession",
+		ExpirationDateTime: "2025-01-23T17:37:05.007Z",
+		NextExpectedRanges: []string{"0-"},
+		UploadUrl:          "https://example.com/upload",
+	}
+
+	// Unmarshal JSON into the struct
+	var result azure.OneDriveUploadSessionModel
+	err := json.Unmarshal([]byte(jsonResponse), &result)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal JSON: %v", err)
+	}
+
+	// Compare the result with the expected struct
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Unmarshalled struct does not match expected.\nGot: %+v\nExpected: %+v", result, expected)
+	}
 }

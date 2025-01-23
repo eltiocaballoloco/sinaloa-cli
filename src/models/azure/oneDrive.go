@@ -92,3 +92,13 @@ func (o *OneDriveItemModel) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+// Upload a file to onedrive model (response from api called).
+// UploadSession represents the structure of the upload
+// session returned by Microsoft Graph API
+type OneDriveUploadSessionModel struct {
+	ODataContext       string   `json:"@odata.context"`
+	ExpirationDateTime string   `json:"expirationDateTime"`
+	NextExpectedRanges []string `json:"nextExpectedRanges"`
+	UploadUrl          string   `json:"uploadUrl"`
+}

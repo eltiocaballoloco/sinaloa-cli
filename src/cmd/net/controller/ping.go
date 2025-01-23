@@ -18,7 +18,7 @@ func Ping(urlPath string) ([]byte, error) {
 	if statusCode, err := be.Ping(urlPath); err != nil {
 		// Handle the error
 		errorMessage := fmt.Sprintf("Ping error: %s", err.Error())
-		return helpers.HandleController(
+		return helpers.HandleControllerApi(
 			false,
 			"500",
 			errorMessage,
@@ -34,7 +34,7 @@ func Ping(urlPath string) ([]byte, error) {
 			StatusCode: statusCode,
 		}
 		// Handle the response
-		return helpers.HandleController(
+		return helpers.HandleControllerApi(
 			true,
 			"200",
 			"Ping successful",

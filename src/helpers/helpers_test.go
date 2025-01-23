@@ -137,7 +137,7 @@ func TestHandleController_Success(t *testing.T) {
 	data := map[string]string{"key": "value"}
 
 	// Act: Call HandleController
-	output, err := helpers.HandleController(result, statusCode, message, controllerFunction, data, nil)
+	output, err := helpers.HandleControllerApi(result, statusCode, message, controllerFunction, data, nil)
 
 	// Assert: Validate output
 	assert.NoError(t, err, "Error should be nil for successful responses")
@@ -158,7 +158,7 @@ func TestHandleController_Error(t *testing.T) {
 	controllerFunction := "TestController"
 
 	// Act: Call HandleController
-	output, handlerErr := helpers.HandleController(result, statusCode, message, controllerFunction, nil, nil)
+	output, handlerErr := helpers.HandleControllerApi(result, statusCode, message, controllerFunction, nil, nil)
 
 	// Assert: Validate output
 	assert.Equal(t, nil, handlerErr, "Handler should return the input error")
@@ -180,7 +180,7 @@ func TestHandleController_ByteData(t *testing.T) {
 	data := []byte(`{"key": "value"}`)
 
 	// Act: Call HandleController
-	output, err := helpers.HandleController(result, statusCode, message, controllerFunction, data, nil)
+	output, err := helpers.HandleControllerApi(result, statusCode, message, controllerFunction, data, nil)
 
 	// Assert: Validate output
 	assert.NoError(t, err, "Error should be nil for successful responses with byte data")
@@ -206,7 +206,7 @@ func TestHandleController_InvalidByteData(t *testing.T) {
 	data := []byte(`invalid-json`)
 
 	// Act: Call HandleController
-	output, err := helpers.HandleController(result, statusCode, message, controllerFunction, data, nil)
+	output, err := helpers.HandleControllerApi(result, statusCode, message, controllerFunction, data, nil)
 
 	// Assert: Validate output
 	assert.NoError(t, err, "Error should be nil even if byte data is invalid")
@@ -217,4 +217,81 @@ func TestHandleController_InvalidByteData(t *testing.T) {
 	assert.True(t, parsedResponse.Response, "Response field should be true")
 	assert.Equal(t, statusCode, parsedResponse.Code, "StatusCode should match")
 	assert.Equal(t, message, parsedResponse.Message, "Message should match")
+}
+
+// Mock response and error packages
+type MockResponse struct {
+	Success bool        `json:"success"`
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data,omitempty"`
+}
+
+type MockErrorResponse struct {
+	Success bool   `json:"success"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+func TestHandleControllerGeneric(t *testing.T) {
+	tests := []struct {
+		name               string
+		message            string
+		controllerFunction string
+		data               interface{}
+		err                error
+		expectedResponse   interface{}
+		expectError        bool
+	}{
+		{
+			name:               "Successful response with data",
+			message:            "Operation successful",
+			controllerFunction: "TestFunction",
+			data:               map[string]string{"key": "value"},
+			err:                nil,
+			expectedResponse: MockResponse{
+				Success: true,
+				Code:    "200",
+				Message: "Operation successful",
+				Data:    map[string]string{"key": "value"},
+			},
+			expectError: false,
+		},
+		{
+			name:               "Error response",
+			message:            "Operation failed",
+			controllerFunction: "TestFunction",
+			data:               nil,
+			err:                nil,
+			expectedResponse: MockErrorResponse{
+				Success: false,
+				Code:    "500",
+				Message: "Error executing the command",
+			},
+			expectError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Call the function under test
+			responseBytes, err := helpers.HandleControllerGeneric(tt.message, tt.controllerFunction, tt.data, tt.err)
+
+			// Check if an error was expected
+			if (err != nil) != tt.expectError {
+				assert.Empty(t, err, "Error should be empty")
+			}
+
+			// Unmarshal the response
+			var actualResponse interface{}
+			if tt.expectError {
+				actualResponse = MockErrorResponse{}
+			} else {
+				actualResponse = MockResponse{}
+			}
+			if err := json.Unmarshal(responseBytes, &actualResponse); err != nil {
+				t.Fatalf("failed to unmarshal response: %v", err)
+			}
+		})
+	}
 }

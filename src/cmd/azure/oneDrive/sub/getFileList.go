@@ -14,8 +14,8 @@ var (
 
 var GetfileListOnedriveCmd = &cobra.Command{
 	Use:   "get-file-list",
-	Short: "Get a list of file and folders from one drive",
-	Long:  "Get a list of file and folders from one drive",
+	Short: "Get a list of file and folders from onedrive",
+	Long:  "Get a list of file and folders from onedrive",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Call the controller's GetFileList function
 		result, _ := controller.GetFileList(path)
