@@ -94,7 +94,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 				)
 			}
 
-			err := downloadFile(downloadUrl, pathToSaveFile)
+			err := DownloadFile(downloadUrl, pathToSaveFile)
 			if err != nil {
 				return helpers.HandleController(
 					false,
@@ -129,7 +129,7 @@ func GetFile(path string, pathToSaveFile string) ([]byte, error) {
 	)
 }
 
-func downloadFile(downloadUrl, savePath string) error {
+func DownloadFile(downloadUrl, savePath string) error {
 	// Create the HTTP request
 	resp, err := http.Get(downloadUrl)
 	if err != nil {

@@ -8,26 +8,6 @@ import (
 	"github.com/eltiocaballoloco/sinaloa-cli/src/models/messages/response"
 )
 
-func HandleResponse(message string, code string, data interface{}) []byte {
-	successResponse := response.NewResponse(true, code, message, data)
-	successJsonResponse, err := json.MarshalIndent(successResponse, "", "  ")
-	if err != nil {
-		errorResponse := map[string]interface{}{
-			"response": false,
-			"code":     "500",
-			"message":  fmt.Sprintf("Error marshaling JSON: %v", err),
-			"data":     struct{}{},
-		}
-
-		errorJsonResponse, _ := json.MarshalIndent(errorResponse, "", "  ")
-		fmt.Println(string(errorJsonResponse))
-		return errorJsonResponse
-	}
-
-	fmt.Println(string(successJsonResponse))
-	return successJsonResponse
-}
-
 func HandleController(result bool, statusCode string, message string, controllerFunction string, data interface{}, err error) ([]byte, error) {
 	// Convert data to a structured object if it is a byte slice
 	if byteData, ok := data.([]byte); ok {
