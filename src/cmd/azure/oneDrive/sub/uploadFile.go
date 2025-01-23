@@ -28,6 +28,6 @@ var UploadFileOnedriveCmd = &cobra.Command{
 func init() {
 	UploadFileOnedriveCmd.Flags().StringVarP(&file_path_to_upload, "file_path_to_upload", "f", "", "file to upload to onedrive, example: -f /local/path/file.txt")
 	UploadFileOnedriveCmd.MarkFlagRequired("file_path_to_upload")
-	UploadFileOnedriveCmd.Flags().StringVarP(&upload_path, "upload_path", "g", "", "path where you want store the file in onedrive, example: -g /config/file.txt")
+	UploadFileOnedriveCmd.Flags().StringVarP(&upload_path, "upload_path", "g", "", "path where you want store the file in onedrive, example: -g config/file.txt")
 	UploadFileOnedriveCmd.MarkFlagRequired("upload_path")
 }
