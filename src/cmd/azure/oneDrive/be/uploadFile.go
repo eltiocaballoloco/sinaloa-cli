@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -31,15 +30,14 @@ func UploadItem(localPath string, pathToUpload string) (bool, error) {
 	// Obtain an access token
 	accessToken, err := graphApiClient.GetAccessToken()
 	if err != nil {
-		log.Fatalf("Error obtaining access token UploadItem: %v", err)
+		fmt.Errorf("[ERROR] Obtaining access token UploadItem: %v", err)
 		return false, err
 	}
 
 	// Separate the directory and file name from the pathToUpload
 	dir, file := filepath.Split(pathToUpload)
 	if file == "" {
-		err := fmt.Errorf("invalid pathToUpload: file name is missing")
-		log.Fatalf("Error: %v", err)
+		fmt.Errorf("[ERROR] Invalid pathToUpload: file name is missing")
 		return false, err
 	}
 
@@ -52,19 +50,18 @@ func UploadItem(localPath string, pathToUpload string) (bool, error) {
 		file,
 	)
 	if err != nil {
-		log.Fatalf("Error creating upload session (UploadOneDrive): %v", err)
+		fmt.Errorf("[ERROR] Creating upload session (UploadOneDrive): %v", err)
 		return false, err
 	}
 
 	// Upload the file in chunks
 	err = UploadFileInChunks(uploadSessionUrl, localPath)
 	if err != nil {
-		log.Fatalf("Error uploading file in chunks (UploadOneDrive): %v", err)
+		fmt.Errorf("[ERROR] Uploading file in chunks (UploadOneDrive): %v", err)
 		return false, err
 	}
 
 	// Print success message and return	true if all steps are successful
-	fmt.Println("[INFO] File uploaded successfully!")
 	return true, nil
 }
 
@@ -78,7 +75,7 @@ func CreateUploadSession(baseUrl, accessToken, driveID, folderPath, fileName str
 
 	// Define the request body for the post request
 	requestBody := map[string]interface{}{
-		"@microsoft.graph.conflictBehavior": "rename | fail | replace",
+		"@microsoft.graph.conflictBehavior": "replace",
 		"fileSystemInfo": map[string]interface{}{
 			"@odata.type": "microsoft.graph.fileSystemInfo",
 		},
@@ -103,7 +100,7 @@ func CreateUploadSession(baseUrl, accessToken, driveID, folderPath, fileName str
 
 	// Extract the upload URL
 	if sessionUpload.UploadUrl == "" {
-		return "", fmt.Errorf("Upload URL not found in response")
+		return "", fmt.Errorf("[ERROR] Upload URL not found in response")
 	}
 
 	return sessionUpload.UploadUrl, nil
@@ -174,7 +171,9 @@ func UploadFileInChunks(uploadURL, localPath string) error {
 		defer resp.Body.Close()
 
 		// Check for successful response
-		if resp.StatusCode != http.StatusAccepted && resp.StatusCode != http.StatusCreated {
+		if resp.StatusCode != http.StatusAccepted &&
+			resp.StatusCode != http.StatusCreated &&
+			resp.StatusCode != http.StatusOK {
 			return fmt.Errorf("failed to upload chunk, status: %s", resp.Status)
 		}
 	}

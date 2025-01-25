@@ -16,7 +16,7 @@ func UploadFile(localPath string, pathToUpload string) ([]byte, error) {
 	}
 	// Handle the response
 	return helpers.HandleControllerGeneric(
-		"File uploaded successfully!",
+		"File uploaded successfully to onedrive!",
 		"UploadFile",
 		data,
 		err,
