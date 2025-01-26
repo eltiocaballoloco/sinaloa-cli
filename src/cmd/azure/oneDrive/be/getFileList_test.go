@@ -1,10 +1,11 @@
-package be
+package be_test
 
 import (
 	"encoding/json"
 	"errors"
 	"testing"
 
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure/oneDrive/be"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/models"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/models/azure"
@@ -66,7 +67,7 @@ func TestGetDriveItems_Success(t *testing.T) {
 	mockLoadConfig("mock-client-id", "mock-client-secret", "mock-tenant-id", "mock-drive-id")
 
 	// Act: Call GetDriveItems
-	result, _ := GetDriveItems("/mock-path")
+	result, _ := be.GetDriveItems("/mock-path")
 
 	// Assert: Verify response
 	assert.NotEmpty(t, result, "Response should not empty")
@@ -77,7 +78,7 @@ func TestGetDriveItems_AccessTokenError(t *testing.T) {
 	mockLoadConfig("error", "mock-client-secret", "mock-tenant-id", "mock-drive-id")
 
 	// Act: Call GetDriveItems
-	result, err := GetDriveItems("/mock-path")
+	result, err := be.GetDriveItems("/mock-path")
 
 	// Assert: Verify response
 	assert.Error(t, err, "GetDriveItems should return an error if access token retrieval fails")
@@ -89,7 +90,7 @@ func TestGetDriveItems_UnmarshalError(t *testing.T) {
 	mockLoadConfig("mock-client-id", "mock-client-secret", "mock-tenant-id", "mock-drive-id")
 
 	// Act: Call GetDriveItems
-	result, err := GetDriveItems("/mock-path")
+	result, err := be.GetDriveItems("/mock-path")
 
 	// Assert: Verify response
 	assert.Error(t, err, "GetDriveItems should return an error if unmarshalling fails")
@@ -101,7 +102,7 @@ func TestGetDriveItems_MissingConfig(t *testing.T) {
 	mockLoadConfig("", "", "", "")
 
 	// Act: Call GetDriveItems
-	result, err := GetDriveItems("/mock-path")
+	result, err := be.GetDriveItems("/mock-path")
 
 	// Assert: Verify response
 	assert.Error(t, err, "GetDriveItems should return an error if configuration is missing")
