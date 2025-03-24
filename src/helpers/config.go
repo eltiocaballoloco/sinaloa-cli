@@ -2,8 +2,6 @@ package helpers
 
 import (
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -18,12 +16,6 @@ var (
 )
 
 func LoadConfig() {
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		return
-	}
-
 	// Set values to AppConfig
 	AppConfig = Config{
 		AZURE_TENANT_ID:     os.Getenv("AZURE_TENANT_ID"),
