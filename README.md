@@ -122,7 +122,7 @@ This project includes a `Makefile` to simplify common tasks for building, testin
 ---
 
 ### `make test`
-- Runs all Go tests located in the `tests/` directory.
+- Runs all Go tests.
 
 ---
 
