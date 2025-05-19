@@ -87,6 +87,71 @@ After doing this, the cobra-cli command should be available in all new terminal 
 
 # Makefile
 
+This project includes a `Makefile` to simplify common tasks for building, testing, and managing the `sinaloa-cli` application.
+
+## Targets
+
+### `make build`
+- Compiles the Go source code from `src/main.go`.
+- Places the output binary in the `build/` directory.
+- Copies the final binary to `/usr/local/bin/sinaloa` for global CLI use.
+
+---
+
+### `make build-clean`
+- Cleans Go build artifacts.
+- Deletes the `build/` directory.
+
+---
+
+### `make deps`
+- Installs all Go dependencies.
+- Equivalent to:  
+  ```bash
+  go get -v -t -d ./...
+  ```
+
+---
+
+### `make mod-tidy`
+- Cleans up `go.mod` and `go.sum` using:
+  ```bash
+  go mod tidy
+  ```
+
+---
+
+### `make test`
+- Runs all Go tests located in the `tests/` directory.
+
+---
+
+## Command Generation
+
+### `make new-cmd cmd=<command> subcmd=<subcommand> flags="<flags>"`
+Generates a new command and subcommand with the specified flags using `scripts/create_cmd.sh`.
+
+- Example:
+  ```bash
+  make new-cmd cmd=storj subcmd=add flags="secret:secret:s:Storj secret to connect within:true:|path:path:p:Path to store file:true:"
+  ```
+
+---
+
+### `make new-sub cmd=<command> subcmd=<subcommand> flags="<flags>"`
+Adds a new subcommand to an existing command using `scripts/create_sub.sh`.
+
+- Example:
+  ```bash
+  make new-sub cmd=storj subcmd=put flags="msg:msg:m:Message to receive:true:|path:path:p:Storage path:true:"
+  ```
+
+---
+
+## Notes
+- Ensure that `scripts/create_cmd.sh` and `scripts/create_sub.sh` are executable.
+- Requires Go installed and accessible via the `go` command.
+- Run `make build` with `sudo` if you want to copy the binary to `/usr/local/bin`.
 
 
 # Env
@@ -97,6 +162,7 @@ It is necessary create an .env file:
 AZURE_TENANT_ID="xxx-yyyy-tttt-1234"
 AZURE_CLIENT_ID="xxx-yyyy-tttt-1234"
 AZURE_CLIENT_SECRET="xxx-yyyy-tttt-1234"
+AZURE_DRIVE_ID="xxx-yyyy-tttt-1234"
 ```
 
 Now you can do:
