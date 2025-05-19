@@ -164,14 +164,3 @@ AZURE_CLIENT_ID="xxx-yyyy-tttt-1234"
 AZURE_CLIENT_SECRET="xxx-yyyy-tttt-1234"
 AZURE_DRIVE_ID="xxx-yyyy-tttt-1234"
 ```
-
-Now you can do:
-
-```bash
-cd scripts
-```
-```bash
-source set_env_var.sh
-```
-
-So you are able to set OS ENV variables before the execution of the sinaloa cli.
