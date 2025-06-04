@@ -4,6 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+    "github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd"
+    "github.com/eltiocaballoloco/sinaloa-cli/src/cmd/docker"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net"
@@ -27,6 +29,8 @@ func Execute() {
 }
 
 func addSubcommandPalettes() {
+    rootCmd.AddCommand(argocd.ArgocdCmd)
+    rootCmd.AddCommand(docker.DockerCmd)
 	rootCmd.AddCommand(azure.AzureCmd)
 	rootCmd.AddCommand(net.NetCmd)
 	rootCmd.AddCommand(version.VersionCmd)
