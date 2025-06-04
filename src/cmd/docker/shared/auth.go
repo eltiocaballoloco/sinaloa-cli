@@ -1,4 +1,4 @@
-package auth
+package shared
 
 import (
 	"encoding/json"
@@ -20,13 +20,12 @@ type DockerHubLoginResponse struct {
 // LoginToDockerHub logs into Docker Hub and returns the auth token and refresh token.
 func LoginToDockerHub(username, password string) (string, string, error) {
 	client := helpers.NewApiClient("https://hub.docker.com", "", "None")
-
 	payload := DockerHubLoginRequest{
 		Username: username,
 		Password: password,
 	}
 
-	res := client.Request("POST", "/v2/users/login/", payload)
+	res := client.Request("POST", "/v2/users/login", payload)
 	if !res.Response {
 		return "", "", fmt.Errorf("login failed: %s", res.Message)
 	}

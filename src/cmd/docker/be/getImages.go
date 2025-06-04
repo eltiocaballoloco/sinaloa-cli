@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
-	"github.com/eltiocaballoloco/sinaloa-cli/src/model/docker"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/docker"
 )
 
 func GetImages(token string, refreshToken string, repoPath string, imagesForPage string) (docker.TagResponseInternal, int, error) {
@@ -21,12 +21,12 @@ func GetImages(token string, refreshToken string, repoPath string, imagesForPage
 		statusCode = response.StatusCode
 
 		if !response.Response {
-			return nil, statusCode, fmt.Errorf("failed to get images from dockerhub: %s", response.Message)
+			return docker.TagResponseInternal{}, statusCode, fmt.Errorf("failed to get images from dockerhub: %s", response.Message)
 		}
 
 		var tagsResp docker.TagsResponse
 		if err := json.Unmarshal(response.Body, &tagsResp); err != nil {
-			return nil, statusCode, fmt.Errorf("failed to unmarshal tags response: %w", err)
+			return docker.TagResponseInternal{}, statusCode, fmt.Errorf("failed to unmarshal tags response: %w", err)
 		}
 
 		allResults = append(allResults, tagsResp.Results...)
@@ -48,12 +48,7 @@ func GetImages(token string, refreshToken string, repoPath string, imagesForPage
 		Results:  allResults,
 	}
 
-	output, err := json.Marshal(final)
-	if err != nil {
-		return nil, statusCode, fmt.Errorf("failed to marshal final tags response: %w", err)
-	}
-
-	return convertTagsResponse(output), statusCode, nil
+	return convertTagsResponse(final), statusCode, nil
 }
 
 // convertTagsResponse converts the external TagsResponse into your internal TagResponseInternal.

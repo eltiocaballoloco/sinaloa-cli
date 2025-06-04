@@ -15,11 +15,11 @@ var (
 )
 
 var GetImagesDockerCmd = &cobra.Command{
-	Use:   "getImages",
-	Short: "Short description of getImages",
-	Long:  "Long description of getImages",
+	Use:   "get-images",
+	Short: "Get Docker images from a repository",
+	Long:  "Get Docker images from a specified repository on Docker Hub. You can specify the number of items per page.",
 	Run: func(cmd *cobra.Command, args []string) {
-		result, _ := controller.GetImages(repo, strconv.Itoa(itemsForPage))
+		result, _ := controller.GetImages(repo, strconv.Itoa(itemsForPage), "get", true)
 		fmt.Println(string(result))
 	},
 }
