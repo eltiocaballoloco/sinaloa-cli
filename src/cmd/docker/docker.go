@@ -16,4 +16,5 @@ var DockerCmd = &cobra.Command{
 
 func init() {
 	DockerCmd.AddCommand(sub.GetImagesDockerCmd)
+	DockerCmd.AddCommand(sub.DeleteImagesDockerCmd)
 }

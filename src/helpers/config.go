@@ -11,8 +11,8 @@ type Config struct {
 	AZURE_CLIENT_ID     string
 	AZURE_CLIENT_SECRET string
 	AZURE_DRIVE_ID      string
-	DOCKER_HUB_USER_R   string
-	DOCKER_HUB_PWD_R    string
+	DOCKER_HUB_USER_RWD string
+	DOCKER_HUB_PWD_RWD  string
 }
 
 var (
@@ -32,7 +32,7 @@ func LoadConfig() {
 		AZURE_CLIENT_ID:     os.Getenv("AZURE_CLIENT_ID"),
 		AZURE_CLIENT_SECRET: os.Getenv("AZURE_CLIENT_SECRET"),
 		AZURE_DRIVE_ID:      os.Getenv("AZURE_DRIVE_ID"),
-		DOCKER_HUB_USER_R:   os.Getenv("DOCKER_HUB_USER_R"),
-		DOCKER_HUB_PWD_R:    os.Getenv("DOCKER_HUB_PWD_R"),
+		DOCKER_HUB_USER_RWD: os.Getenv("DOCKER_HUB_USER_RWD"),
+		DOCKER_HUB_PWD_RWD:  os.Getenv("DOCKER_HUB_PWD_RWD"),
 	}
 }

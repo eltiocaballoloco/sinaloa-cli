@@ -75,6 +75,7 @@ After doing this, the cobra-cli command should be available in all new terminal 
 - go get github.com/microsoftgraph/msgraph-sdk-go@v1.53.0
 - go get github.com/microsoft/kiota-http-go@v1.4.5
 - go get github.com/Azure/azure-sdk-for-go/sdk/azidentity@v1.8.0
+- go get github.com/Masterminds/semver/v3
 - cobra-cli init <cli_name> (to create cli)
 - cobra-cli add <name_cmd> (to create a new command)
 

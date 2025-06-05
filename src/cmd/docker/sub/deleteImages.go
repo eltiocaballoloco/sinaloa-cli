@@ -11,8 +11,9 @@ import (
 
 var (
 	repoD         string
-	dryRun        bool = true // Default to dry run
-	itemsForPageD int  = 100  // Default number of items per page
+	itemsToTake   int
+	itemsForPageD int    = 100    // Default number of items per page
+	dryRunStr     string = "true" // Default to dry run
 )
 
 var DeleteImagesDockerCmd = &cobra.Command{
@@ -20,16 +21,28 @@ var DeleteImagesDockerCmd = &cobra.Command{
 	Short: "Delete Docker images from a repository",
 	Long:  "Delete Docker images from a specified repository on Docker Hub. You can specify the number of items per page.",
 	Run: func(cmd *cobra.Command, args []string) {
-		result, _ := controller.GetImages(repo, strconv.Itoa(itemsForPage), "delete", dryRun)
+		dryRun, err := strconv.ParseBool(dryRunStr)
+		if err != nil {
+			fmt.Println("[Error] Invalid value for dry-run, must be true or false")
+			return
+		}
+		result, _ := controller.GetImages(repoD, strconv.Itoa(itemsForPageD), strconv.Itoa(itemsToTake), "delete", dryRun)
 		fmt.Println(string(result))
 	},
 }
 
 func init() {
-	DeleteImagesDockerCmd.Flags().BoolVarP(&dryRun, "dry-run", "d", dryRun, "Dry run, if true return only the tags to delete without actually deleting them. False will delete the tags")
 	DeleteImagesDockerCmd.Flags().IntVarP(&itemsForPageD, "items", "i", itemsForPageD, "Number of items per page")
 	DeleteImagesDockerCmd.Flags().StringVarP(&repoD, "repo", "r", "", "Docker repository to get images list")
 	if err := DeleteImagesDockerCmd.MarkFlagRequired("repo"); err != nil {
 		fmt.Println(err)
 	}
+	DeleteImagesDockerCmd.Flags().IntVarP(&itemsToTake, "items-to-take", "t", 0, "Number of the first X tags to take from the repository.")
+	DeleteImagesDockerCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+		if !cmd.Flags().Changed("items-to-take") || itemsToTake <= 0 {
+			return fmt.Errorf("parameter '--items-to-take' is required and must be greater than 0")
+		}
+		return nil
+	}
+	DeleteImagesDockerCmd.Flags().StringVarP(&dryRunStr, "dry-run", "d", dryRunStr, "Dry run, true or false")
 }
