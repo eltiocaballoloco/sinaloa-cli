@@ -2,6 +2,7 @@ package argocd
 
 import (
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd/sub"
+
 	"github.com/spf13/cobra"
 )
 

@@ -1,41 +1,48 @@
 package sub
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd/controller"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/models/argocd"
 )
 
 var (
-	json string
+	jsonInput string
 )
 
 var DeployArgocdCmd = &cobra.Command{
 	Use:   "deploy",
-	Short: "Short description of deploy",
-	Long:  "Long description of deploy",
+	Short: "ArgoCD deploy cmd using the plugin",
+	Long:  "Deploy an application using ArgoCD with the specified JSON configuration, through the argo-plugin cmp.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Executing deploy in argocd")
+		// Check if the json input is provided
+		if jsonInput == "" {
+			fmt.Fprintln(os.Stderr, "[Error] JSON input is required (-j or --json)")
+			os.Exit(1)
+		}
 
-		// 1 - Checking the image version
-		//     * incremental: we need to get last version from the docker hub
-		//                    and sostitute in the values
-		//     * latest:      It is setup directly in the values file
-		//     * void '':     Take the version from the values file
+		// Convert the json input string
+		// with the associated class model
+		var params argocd.ArgoCDDeployParams
+		errParseClass := json.Unmarshal([]byte(jsonInput), &params)
+		if errParseClass != nil {
+			fmt.Fprintln(os.Stderr, "[Error] Failed to parse JSON input:", errParseClass)
+			os.Exit(1)
+		}
 
-		// 2 - Take the secrets for env, from onedrive
-
-		// 3 - Concat extra_secrets
-
-		// 4 - if module is different from '', take the secret from onedrive
-		//     based on the specific module and the environment
-
-		// 5 - Concat chart params
-
-		// 6 - Create iwth previuos points the helm template to render on stdout for argocd
+		// Execute the deploy
+		errDeploy := controller.Deploy(params)
+		if errDeploy != nil {
+			fmt.Fprintln(os.Stderr, "[Error] Failed to deploy with ArgoCD... ", errDeploy)
+		}
 	},
 }
 
 func init() {
-	DeployArgocdCmd.Flags().StringVarP(&json, "json", "j", "", "Json to pass for the deploy with argocd")
+	DeployArgocdCmd.Flags().StringVarP(&jsonInput, "json", "j", "", "Json to pass for the deploy with argocd")
 }
