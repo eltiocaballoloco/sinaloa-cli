@@ -26,9 +26,11 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	// 4 - if module is different from '', take the secret from onedrive
 	//     based on the specific module and the environment
 
-	// 5 - If incremental is true, replace the last image tag version in the values.yaml file
+	// 5 - If isIncremental/isLatest is true, replace the last image tag
+	//     version in the values.yaml file
 
-	// 6 - Create with previuos points the helm template to render on stdout for argocd
+	// 6 - Create with previuos points the helm template
+	//     to render on stdout for argocd
 
 	// ----------------------------------------------------------------------------------
 
