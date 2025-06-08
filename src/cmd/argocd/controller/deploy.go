@@ -156,7 +156,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 
 	// If chartsParams contains something append them to the cmd
 	if params.ChartParams != "" {
-		args = append(args, "--set", params.ChartParams)
+		args = append(args, params.ChartParams)
 	}
 
 	// Execute the Helm command and print real-time output to stdout/stderr
