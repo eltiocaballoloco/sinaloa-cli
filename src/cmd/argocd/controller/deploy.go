@@ -133,8 +133,9 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	args := []string{ // Create args string array
 		"template",
 		"--release-name", params.ReleaseName,
-		params.ChartRepo,
 		"--namespace", params.Namespace,
+		params.ChartName,
+		"--repo", params.ChartRepo,
 		"-f", outputDir + "/" + valuesYml,
 		"-f", outputDir + "/" + secretYml,
 	}
