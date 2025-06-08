@@ -39,7 +39,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	var valuesYml string = "values.yaml"
 	var secretYml string = params.ManifestName
 	var moduleValuesYml string = ""
-	var moduleSecretyYml string = ""
+	var moduleSecretYml string = ""
 
 	// Step 1 - Image version
 	var imageTag string
@@ -99,12 +99,12 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	if params.Module != "" {
 		// Set the name of the manifests for the module
 		moduleValuesYml = fmt.Sprintf("values-%s.yaml", params.Module)
-		moduleSecretyYml = fmt.Sprintf("secret-%s.yaml", params.Module)
+		moduleSecretYml = fmt.Sprintf("secret-%s.yaml", params.Module)
 
 		// Execute the fetch
 		errModuleSecret := shared.FetchSecret(
 			params.Profile,
-			outputDir+"/"+moduleSecretyYml,
+			outputDir+"/"+moduleSecretYml,
 			params.RepoURL,
 			params.DockerRepo,
 			params.ManifestName,
@@ -124,32 +124,34 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 			"\""+imageTag+"\"",
 		)
 		if errImageV != nil {
-			fmt.Fprintln(os.Stderr, "[Error] ArgoCD.Deploy.ReplaceInFile:", errImageV)
+			fmt.Fprintln(os.Stderr, "[Error] ArgoCD.Deploy.UpdateImageTagWithRegex:", errImageV)
 			return errImageV
 		}
 	}
 
 	// Step 6 - Run helm template cmd
 	args := []string{ // Create args string array
-		"template", params.ReleaseName,
+		"template",
+		"--release-name", params.ReleaseName,
+		params.ChartRepo,
 		"--namespace", params.Namespace,
-		"-f", valuesYml,
-		"-f", secretYml,
+		"-f", outputDir + "/" + valuesYml,
+		"-f", outputDir + "/" + secretYml,
 	}
 
 	// If there are extra values secrets files, append them to the cmd
 	if params.ExtraSecrets != "" {
 		fileList := strings.Split(params.ExtraSecrets, ",")
 		for _, file := range fileList {
-			args = append(args, "-f", file)
+			args = append(args, "-f", outputDir+"/"+file)
 		}
 	}
 
 	// If module is defined, append module-specific
 	// values and secret to the cmd
 	if params.Module != "" {
-		args = append(args, "-f", moduleValuesYml)
-		args = append(args, "-f", moduleSecretyYml)
+		args = append(args, "-f", outputDir+"/"+moduleValuesYml)
+		args = append(args, "-f", outputDir+"/"+moduleSecretYml)
 	}
 
 	// If chartsParams contains something append them to the cmd
