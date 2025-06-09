@@ -17,7 +17,6 @@ import (
 func FetchLatestTag(repoUrl string, dockerRepo string) (string, error) {
 	// Get the complete dockerhub path from repoUrl
 	dockerRepoPath := helpers.ReturnCompleteDockerRepoPath(repoUrl, dockerRepo)
-	fmt.Printf("[Info] Fetching latest tag from Docker repository: %s\n", dockerRepoPath)
 
 	// Get image list
 	imageListBytes, err := controller.GetImages(
