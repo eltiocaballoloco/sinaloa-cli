@@ -7,6 +7,6 @@ import (
 func ReturnCompleteDockerRepoPath(repoUrl string, dockerRepo string) string {
 	trimmed := strings.TrimPrefix(repoUrl, "git@gitlab.com:")
 	trimmed = strings.TrimSuffix(trimmed, ".git")
-	dockerRepoPath := dockerRepo + "/" + trimmed
+	dockerRepoPath := dockerRepo + "/" + strings.ReplaceAll(trimmed, "/", ".")
 	return dockerRepoPath
 }
