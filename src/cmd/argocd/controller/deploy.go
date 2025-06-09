@@ -13,23 +13,25 @@ import (
 )
 
 func Deploy(params argocd.ArgoCDDeployParams) error {
-	// 1 - Checking the image version
+	// 1 - Remove and create the tmp folder and copy the values.yaml
+
+	// 2 - Checking the image version
 	//     * incremental: we need to get last version from the docker hub
 	//                    and sostitute in the values
 	//     * latest:      It is setup directly in the values file
 	//     * void '':     Take the version from the values file
 
-	// 2 - Take the secrets for env, from onedrive
+	// 3 - Take the secrets for env, from onedrive
 
-	// 3 - Take extra_secrets
+	// 4 - Take extra_secrets
 
-	// 4 - if module is different from '', take the secret from onedrive
+	// 5 - if module is different from '', take the secret from onedrive
 	//     based on the specific module and the environment
 
-	// 5 - If isIncremental/isLatest is true, replace the last image tag
+	// 6 - If isIncremental/isLatest is true, replace the last image tag
 	//     version in the values.yaml file
 
-	// 6 - Create with previuos points the helm template
+	// 7 - Create with previuos points the helm template
 	//     to render on stdout for argocd
 
 	// ----------------------------------------------------------------------------------
@@ -37,16 +39,37 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	// Declare variables and fix the work directory
 	var outputDir string = filepath.Join("/tmp", params.AppName)
 	var valuesYml string = "values.yaml"
-	var secretYml string = params.ManifestName
+	var secretYml string = "secret.yaml"
 	var moduleValuesYml string = ""
 	var moduleSecretYml string = ""
 
-	// Step 1 - Image version
+	// Step 1 - Remove and create the tmp folder and copy the values.yaml
+	errRmvTmpFolder := os.RemoveAll(outputDir) // Remove the old tmp folder if exists
+	if errRmvTmpFolder != nil {
+		fmt.Fprintln(os.Stderr, "[Error] The deletion of the old tmp folder got an error in ArgoCD.Deploy:", errRmvTmpFolder)
+		return errRmvTmpFolder
+	}
+
+	// Create the output directory
+	errCreateTmpFolder := os.MkdirAll(outputDir, 0755)
+	if errCreateTmpFolder != nil {
+		fmt.Fprintln(os.Stderr, "[Error] The creation of the tmp folder got an error in ArgoCD.Deploy:", errCreateTmpFolder)
+		return errCreateTmpFolder
+	}
+
+	// Copy the values.yaml file to the tmp folder
+	errCopyValues := helpers.CopyFile(valuesYml, outputDir+"/"+valuesYml)
+	if errCopyValues != nil {
+		fmt.Fprintln(os.Stderr, "[Error] The copy of the values in the tmp folder got an error in ArgoCD.Deploy:", errCopyValues)
+		return errCopyValues
+	}
+
+	// Step 2 - Image version
 	var imageTag string
 	var errDockerHub error
 	var isIncremental bool = false
 	var isLatest bool = false
-	switch strings.ToLower(params.TagSearch) {
+	switch strings.ToLower(params.Tag) {
 	case "incremental":
 		// Get highest version if set to incremental
 		imageTag, errDockerHub = shared.FetchLatestTag(params.RepoURL, params.DockerRepo)
@@ -63,10 +86,10 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		isLatest = true
 	default:
 		// In this case, will use the image tag provided in the values.yaml
-		imageTag = params.TagSearch
+		imageTag = params.Tag
 	}
 
-	// Step 2 - Fetch base secret
+	// Step 3 - Fetch base secret
 	errSecret := shared.FetchSecret(
 		params.Profile,
 		outputDir+"/"+secretYml,
@@ -79,7 +102,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		return errSecret
 	}
 
-	// Step 3 - Add extra secrets (if defined)
+	// Step 4 - Add extra secrets (if defined)
 	if params.ExtraSecrets != "" {
 		// Get extra secrets from one drive (if configured)
 		errExtraSecret := shared.FetchExtraSecrets(
@@ -95,7 +118,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		}
 	}
 
-	// Step 4 - Module-based secret (if module is defined)
+	// Step 5 - Module-based secret (if module is defined)
 	if params.Module != "" {
 		// Set the name of the manifests for the module
 		moduleValuesYml = fmt.Sprintf("values-%s.yaml", params.Module)
@@ -107,7 +130,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 			outputDir+"/"+moduleSecretYml,
 			params.RepoURL,
 			params.DockerRepo,
-			params.ManifestName,
+			moduleSecretYml,
 		)
 		if errModuleSecret != nil {
 			fmt.Fprintln(os.Stderr, "[Error] ArgoCD.Deploy.FetchSecretModule:", errModuleSecret)
@@ -115,7 +138,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		}
 	}
 
-	// Step 5 - Replace last image tag version in
+	// Step 6 - Replace last image tag version in
 	// the values if isIncremental or isLatest == true
 	if isIncremental || isLatest {
 		// Replace the image tag in the values.yaml file
@@ -129,7 +152,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		}
 	}
 
-	// Step 6 - Run helm template cmd
+	// Step 7 - Run helm template cmd
 	args := []string{ // Create args string array
 		"template",
 		"--release-name", params.ReleaseName,
@@ -168,7 +191,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	// Run the command
 	errCmd := cmd.Run()
 	if errCmd != nil {
-		fmt.Fprintln(os.Stderr, "[Error] ArgoCD.Deploy.cmd.Run:", errCmd)
+		fmt.Fprintln(os.Stderr, "[Error] ArgoCD.Deploy.Cmd.Run:", errCmd)
 		return errCmd
 	}
 

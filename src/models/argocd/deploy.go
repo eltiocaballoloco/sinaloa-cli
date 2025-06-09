@@ -9,14 +9,12 @@ type ArgoCDDeployParams struct {
 
 	Profile      string `json:"ARGOCD_ENV_PROFILE"`
 	Module       string `json:"ARGOCD_ENV_MODULE"`
+	Tag          string `json:"ARGOCD_ENV_TAG"`
 	ExtraSecrets string `json:"ARGOCD_ENV_EXTRA_SECRETS"`
 	ChartName    string `json:"ARGOCD_ENV_CHART_NAME"`
 	ChartRepo    string `json:"ARGOCD_ENV_CHART_REPO"`
 	ChartParams  string `json:"ARGOCD_ENV_CHART_PARAMS"`
-	TagDefault   string `json:"ARGOCD_ENV_TAG_DEFAULT"`
-	TagSearch    string `json:"ARGOCD_ENV_TAG_SEARCH"`
 	ReleaseName  string `json:"ARGOCD_ENV_RELEASE_NAME"`
 
-	DockerRepo   string `json:"ARGOCD_EXTRA_DOCKER_REPO"`
-	ManifestName string `json:"ARGOCD_EXTRA_MANIFEST_NAME"`
+	DockerRepo string `json:"ARGOCD_EXTRA_DOCKER_REPO"`
 }
