@@ -22,8 +22,9 @@ func FetchSecret(
 		dockerRepo,
 	)
 
-	// Remove the prefix of the docker repo registry
+	// Remove the prefix of the docker repo registry and replace '.' with '/'
 	secretPathOnOneDrive = strings.TrimPrefix(secretPathOnOneDrive, dockerRepo+"/")
+	secretPathOnOneDrive = strings.ReplaceAll(secretPathOnOneDrive, ".", "/")
 
 	// Get the manifest from the onedrive
 	_, err := controller.GetFile(

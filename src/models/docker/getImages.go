@@ -58,3 +58,11 @@ type TagResponseInternal struct {
 	TagList []TagInfoInternal `json:"tags_list"`
 	Count   int               `json:"count"`
 }
+
+// Model used for argocd deploy
+type DockerHubResponse struct {
+	Response bool                `json:"response"`
+	Code     string              `json:"code"`
+	Message  string              `json:"message"`
+	Data     TagResponseInternal `json:"data"`
+}

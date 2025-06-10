@@ -35,9 +35,16 @@ func UpdateImageTagWithRegex(filePath, newTag string) error {
 		return fmt.Errorf("failed to read file: %w", err)
 	}
 
-	// This regex assumes the structure under containers[0].image includes `tag: something`
 	re := regexp.MustCompile(`(?m)^\s*tag:\s*.*$`)
-	updatedContent := re.ReplaceAllString(string(content), fmt.Sprintf("  tag: %s", newTag))
+
+	found := false
+	updatedContent := re.ReplaceAllStringFunc(string(content), func(s string) string {
+		if !found {
+			found = true
+			return fmt.Sprintf("      tag: %s", newTag)
+		}
+		return s // per tutte le altre, lascia invariato
+	})
 
 	if err := os.WriteFile(filePath, []byte(updatedContent), 0644); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
