@@ -3,6 +3,7 @@ package helpers
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -35,6 +36,9 @@ func NewApiClient(baseURL, authToken, authType string, timeout ...int) *ApiClien
 		AuthType:  authType,
 		HTTPClient: &http.Client{
 			Timeout: time.Second * time.Duration(defaultTimeout),
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
 		},
 	}
 }
