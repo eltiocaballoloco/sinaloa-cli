@@ -7,6 +7,9 @@ import (
 
 type Config struct {
 	SINALOA_DEBUG       bool
+	ARGOCD_URL          string
+	ARGOCD_USER         string
+	ARGOCD_PASSWORD     string
 	AZURE_TENANT_ID     string
 	AZURE_CLIENT_ID     string
 	AZURE_CLIENT_SECRET string
@@ -28,6 +31,9 @@ func LoadConfig() {
 	// Set values to AppConfig
 	AppConfig = Config{
 		SINALOA_DEBUG:       debug,
+		ARGOCD_URL:          os.Getenv("ARGOCD_URL"),
+		ARGOCD_USER:         os.Getenv("ARGOCD_USER"),
+		ARGOCD_PASSWORD:     os.Getenv("ARGOCD_PASSWORD"),
 		AZURE_TENANT_ID:     os.Getenv("AZURE_TENANT_ID"),
 		AZURE_CLIENT_ID:     os.Getenv("AZURE_CLIENT_ID"),
 		AZURE_CLIENT_SECRET: os.Getenv("AZURE_CLIENT_SECRET"),
