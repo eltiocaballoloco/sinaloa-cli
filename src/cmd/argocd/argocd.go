@@ -17,4 +17,5 @@ var ArgocdCmd = &cobra.Command{
 
 func init() {
 	ArgocdCmd.AddCommand(sub.DeployArgocdCmd)
+	ArgocdCmd.AddCommand(sub.SyncArgocdCmd)
 }
