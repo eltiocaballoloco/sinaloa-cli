@@ -17,6 +17,13 @@ build:
 	mv "$$file" "$$folder/"
 	cp "build/sinaloa" "/usr/local/bin/sinaloa"
 
+# Copy scripts
+copy-scripts:
+	sudo rm -rf /scripts/ci-cd
+	sudo mkdir -p /scripts
+	sudo cp -a scripts/ci-cd /scripts/ci-cd
+	sudo find /scripts/ci-cd -type f -name "*.sh" -exec chmod +x {} \;
+
 # Clean build artifacts
 build-clean:
 	$(GO) clean

@@ -32,5 +32,8 @@ COPY --from=builder /app/scripts/ci-cd /scripts/ci-cd
 # Make sure it's executable
 RUN chmod +x /usr/local/bin/sinaloa
 
+# Make all .sh scripts inside /scripts/ci-cd (recursively) executable
+RUN find /scripts/ci-cd -type f -name "*.sh" -exec chmod +x {} \;
+
 # Execute cmd or execute a cmd passed by arg
 CMD ["sinaloa", "--help"]
