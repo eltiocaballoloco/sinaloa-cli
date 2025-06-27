@@ -17,9 +17,10 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 
 	// 2 - Checking the image version
 	//     * incremental: we need to get last version from the docker hub
-	//                    and sostitute in the values
-	//     * latest:      It is setup directly in the values file
-	//     * void '':     Take the version from the values file
+	//                    and sostitute in the values.
+	//     * latest:      Use always the latest image instead of a specific version.
+	//     * unstable:    For develop.
+	//     * void '':     Take the version from the values file.
 
 	// 3 - Take the secrets for env, from onedrive
 
