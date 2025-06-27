@@ -155,13 +155,10 @@ func filterTagsToDelete(result docker.TagResponseInternal, imagesToTake int) doc
 
 	// Filter semantic version tags and non-semantic version tags
 	var semverTags []docker.TagInfoInternal
-	var nonSemverTags []docker.TagInfoInternal
 	for _, tag := range otherTags {
 		versionStr := strings.TrimPrefix(tag.Name, "v")
 		if _, err := semver.NewVersion(versionStr); err == nil {
 			semverTags = append(semverTags, tag)
-		} else {
-			nonSemverTags = append(nonSemverTags, tag)
 		}
 	}
 
