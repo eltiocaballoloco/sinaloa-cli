@@ -36,5 +36,4 @@ func init() {
 	SyncArgocdCmd.Flags().StringVarP(&gitId, "git-id", "g", "", "Git id of the application")
 	SyncArgocdCmd.Flags().StringVarP(&env, "env", "e", "", "Environments like dev, test, prod")
 	SyncArgocdCmd.Flags().StringVarP(&regions, "regions", "r", "", "Regions, if an application need to be deployed in multiple clusters at the same time")
-
 }

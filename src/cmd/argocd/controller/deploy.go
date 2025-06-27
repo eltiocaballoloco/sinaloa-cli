@@ -69,6 +69,7 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	var errDockerHub error
 	var isIncremental bool = false
 	var isLatest bool = false
+	var isUnstable bool = false
 	switch strings.ToLower(params.Tag) {
 	case "incremental":
 		// Get highest version if set to incremental
@@ -84,6 +85,9 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 		// In this case, will use the image tag provided in the values.yaml
 		imageTag = "latest"
 		isLatest = true
+	case "unstable":
+		imageTag = "unstable"
+		isUnstable = true
 	default:
 		// In this case, will use the image tag provided in the values.yaml
 		imageTag = params.Tag
@@ -139,8 +143,8 @@ func Deploy(params argocd.ArgoCDDeployParams) error {
 	}
 
 	// Step 6 - Replace last image tag version in
-	// the values if isIncremental or isLatest == true
-	if isIncremental || isLatest {
+	// the values if isIncremental or isLatest or isUnstable == true
+	if isIncremental || isLatest || isUnstable {
 		// Replace the image tag in the values.yaml file
 		errImageV := helpers.UpdateImageTagWithRegex(
 			filepath.Join(outputDir, valuesYml),
