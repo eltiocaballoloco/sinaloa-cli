@@ -138,14 +138,16 @@ func GetImages(repoPath string, imagesForPage string, imagesToTake string, metho
 // filterTagsToDelete filters out the tags to delete from the original list
 func filterTagsToDelete(result docker.TagResponseInternal, imagesToTake int) docker.TagResponseInternal {
 	// Declare variables
-	var latestTag *docker.TagInfoInternal
+	tagsToKeep := map[string]bool{
+		"latest":   true,
+		"unstable": true,
+	}
 	var otherTags []docker.TagInfoInternal
 
 	// Look for the latest tag and separate other tags
 	for _, tag := range result.TagList {
-		if tag.Name == "latest" {
-			tagCopy := tag
-			latestTag = &tagCopy
+		if tag.Name == "latest" || tag.Name == "unstable" {
+			tagsToKeep[tag.Name] = true
 		} else {
 			otherTags = append(otherTags, tag)
 		}
@@ -171,10 +173,6 @@ func filterTagsToDelete(result docker.TagResponseInternal, imagesToTake int) doc
 	})
 
 	// Take first N semantic version tags
-	tagsToKeep := map[string]bool{}
-	if latestTag != nil {
-		tagsToKeep[latestTag.Name] = true
-	}
 	for i := 0; i < imagesToTake && i < len(semverTags); i++ {
 		tagsToKeep[semverTags[i].Name] = true
 	}
