@@ -15,14 +15,13 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o sinaloa ./src/main.go
 RUN mkdir -p build && mv sinaloa build/
 
-##################################################
 
 # Stage 2: Final ubuntu image
 FROM ubuntu:24.04
 
 # Add CA certificates if needed (HTTPS, etc.)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get install -y --no-install-recommends ca-certificates curl jq yq make bash git && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the build stage and the deploy scripts
