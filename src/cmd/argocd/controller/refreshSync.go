@@ -31,7 +31,7 @@ func RefreshSync(
 	// 3. If no regions specified, sync all apps in appNames as-is
 	if strings.TrimSpace(regions) == "" {
 		for _, appName := range appNames {
-			fmt.Printf("[Info] Syncing app: %s\n", appName)
+			fmt.Printf("[Info] Refreshing and syncing app: %s\n", appName)
 			if err := syncAppWithPolling(appName); err != nil {
 				return err
 			}
@@ -43,7 +43,7 @@ func RefreshSync(
 		for _, region := range orderedRegions {
 			for _, appName := range appNames {
 				if strings.HasSuffix(appName, "-"+region) {
-					fmt.Printf("[Info] Syncing app: %s\n", appName)
+					fmt.Printf("[Info] Refreshing and Syncing app: %s\n", appName)
 					if err := syncAppWithPolling(appName); err != nil {
 						return err
 					}
@@ -68,7 +68,11 @@ func syncAppWithPolling(appName string) error {
 
 		// Check operationState first (most important for sync operations)
 		if status.Status.OperationState != nil {
-			if status.Status.OperationState.Phase == "Error" || status.Status.OperationState.Phase == "Failed" {
+			// Log current operationState for debugging with detailed info
+			phase := status.Status.OperationState.Phase
+			fmt.Printf("[Info] App %s - OperationState Phase: '%s'\n", appName, phase)
+
+			if phase == "Error" || phase == "Failed" {
 				return fmt.Errorf("[Error] Sync operation failed for %s: %s", appName, status.Status.OperationState.Message)
 			}
 

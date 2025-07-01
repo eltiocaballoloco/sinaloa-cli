@@ -1,6 +1,9 @@
 package sub
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd/controller"
@@ -23,7 +26,7 @@ var SyncArgocdCmd = &cobra.Command{
 		helpers.LoadConfig()
 
 		// Start the argocd sync
-		controller.RefreshSync(
+		err := controller.RefreshSync(
 			gitId,
 			gitlabPath,
 			env,
@@ -32,6 +35,10 @@ var SyncArgocdCmd = &cobra.Command{
 			helpers.AppConfig.ARGOCD_USER,
 			helpers.AppConfig.ARGOCD_PASSWORD,
 		)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+		}
 	},
 }
 
