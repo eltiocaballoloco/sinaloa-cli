@@ -8,9 +8,10 @@ import (
 )
 
 var (
-	gitId   string
-	env     string
-	regions string
+	gitId      string
+	gitlabPath string
+	env        string
+	regions    string
 )
 
 var SyncArgocdCmd = &cobra.Command{
@@ -24,9 +25,11 @@ var SyncArgocdCmd = &cobra.Command{
 		// Start the argocd sync
 		controller.RefreshSync(
 			gitId,
+			gitlabPath,
 			env,
 			regions,
 			helpers.AppConfig.ARGOCD_URL,
+			helpers.AppConfig.ARGOCD_USER,
 			helpers.AppConfig.ARGOCD_PASSWORD,
 		)
 	},
@@ -34,6 +37,7 @@ var SyncArgocdCmd = &cobra.Command{
 
 func init() {
 	SyncArgocdCmd.Flags().StringVarP(&gitId, "git-id", "g", "", "Git id of the application")
+	SyncArgocdCmd.Flags().StringVarP(&gitlabPath, "gitlab-path", "p", "", "Gitlab path of the application")
 	SyncArgocdCmd.Flags().StringVarP(&env, "env", "e", "", "Environments like dev, test, prod")
 	SyncArgocdCmd.Flags().StringVarP(&regions, "regions", "r", "", "Regions, if an application need to be deployed in multiple clusters at the same time")
 }

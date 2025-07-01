@@ -10,19 +10,25 @@ import (
 
 func RefreshSync(
 	gitId string,
+	gitlabPath string,
 	env string,
 	regions string,
 	argocdUrl string,
-	argocdToken string,
+	argocdUsername string,
+	argocdPassword string,
 ) error {
-	// 1. Init client and get all apps matching gitId/env
-	be.InitArgoClient("https://"+argocdUrl, argocdToken)
-	appNames := be.GetAppNames(gitId, env)
+	// 1. Login to ArgoCD and init client
+	if err := be.InitArgoClientWithLogin("https://"+argocdUrl, argocdUsername, argocdPassword); err != nil {
+		return fmt.Errorf("[Error] Failed to authenticate to ArgoCD: %v", err)
+	}
+
+	// 2. Get all apps matching gitId/env
+	appNames := be.GetAppNames(gitId, gitlabPath, env)
 	if len(appNames) == 0 {
 		return fmt.Errorf("[Error] no applications found for gitId: %s and env: %s", gitId, env)
 	}
 
-	// 2. If no regions specified, sync all apps in appNames as-is
+	// 3. If no regions specified, sync all apps in appNames as-is
 	if strings.TrimSpace(regions) == "" {
 		for _, appName := range appNames {
 			fmt.Printf("[Info] Syncing app: %s\n", appName)
@@ -31,7 +37,7 @@ func RefreshSync(
 			}
 		}
 	} else {
-		// 3. Otherwise, sync apps by ordered regions list
+		// 4. Otherwise, sync apps by ordered regions list
 		orderedRegions := strings.Split(regions, ",")
 
 		for _, region := range orderedRegions {
@@ -49,8 +55,9 @@ func RefreshSync(
 }
 
 func syncAppWithPolling(appName string) error {
-	if err := be.TriggerArgoSync(appName); err != nil {
-		return fmt.Errorf("[Error] Failed to trigger sync for %s: %v", appName, err)
+	// First perform hard refresh, then sync
+	if err := be.TriggerArgoHardRefreshAndSync(appName); err != nil {
+		return fmt.Errorf("[Error] Failed to trigger hard refresh and sync for %s: %v", appName, err)
 	}
 
 	for {
@@ -59,13 +66,40 @@ func syncAppWithPolling(appName string) error {
 			return fmt.Errorf("[Error] Failed to get status for %s: %v", appName, err)
 		}
 
-		if status.Status.Sync.Status == "Synced" && status.Status.Health.Status == "Healthy" {
-			fmt.Printf("[Info] App %s successfully synced and healthy\n", appName)
-			break
+		// Check operationState first (most important for sync operations)
+		if status.Status.OperationState != nil {
+			if status.Status.OperationState.Phase == "Error" || status.Status.OperationState.Phase == "Failed" {
+				return fmt.Errorf("[Error] Sync operation failed for %s: %s", appName, status.Status.OperationState.Message)
+			}
+
+			// Check if sync completed successfully with operationState
+			if status.Status.OperationState.Phase == "Succeeded" &&
+				status.Status.Sync.Status == "Synced" &&
+				status.Status.Health.Status == "Healthy" {
+				fmt.Printf("[Info] App %s successfully synced and healthy\n", appName)
+				break
+			}
+		} else {
+			// Fallback to basic sync/health check when operationState is null
+			if status.Status.Sync.Status == "Synced" && status.Status.Health.Status == "Healthy" {
+				fmt.Printf("[Info] App %s successfully synced and healthy (no operationState)\n", appName)
+				break
+			}
 		}
 
+		// Check for degraded health or failed sync status
 		if status.Status.Health.Status == "Degraded" || status.Status.Sync.Status == "Failed" {
-			return fmt.Errorf("[Error] Sync failed for %s", appName)
+			return fmt.Errorf("[Error] Sync failed for %s - Health: %s, Sync: %s",
+				appName, status.Status.Health.Status, status.Status.Sync.Status)
+		}
+
+		// Log current status for debugging
+		if status.Status.OperationState != nil {
+			fmt.Printf("[Info] App %s - Phase: %s, Sync: %s, Health: %s\n",
+				appName, status.Status.OperationState.Phase, status.Status.Sync.Status, status.Status.Health.Status)
+		} else {
+			fmt.Printf("[Info] App %s - Sync: %s, Health: %s (no operationState)\n",
+				appName, status.Status.Sync.Status, status.Status.Health.Status)
 		}
 
 		time.Sleep(5 * time.Second)
