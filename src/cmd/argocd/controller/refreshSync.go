@@ -16,16 +16,16 @@ func RefreshSync(
 	argocdUrl string,
 	argocdUsername string,
 	argocdPassword string,
-) error {
+) ([]string, error) {
 	// 1. Login to ArgoCD and init client
 	if err := be.InitArgoClientWithLogin("https://"+argocdUrl, argocdUsername, argocdPassword); err != nil {
-		return fmt.Errorf("[Error] Failed to authenticate to ArgoCD: %v", err)
+		return nil, fmt.Errorf("[Error] Failed to authenticate to ArgoCD: %v", err)
 	}
 
 	// 2. Get all apps matching gitId/env
 	appNames := be.GetAppNames(gitId, gitlabPath, env)
 	if len(appNames) == 0 {
-		return fmt.Errorf("[Error] no applications found for gitId: %s and env: %s", gitId, env)
+		return nil, fmt.Errorf("[Error] no applications found for gitId: %s and env: %s", gitId, env)
 	}
 
 	// 3. If no regions specified, sync all apps in appNames as-is
@@ -33,25 +33,25 @@ func RefreshSync(
 		for _, appName := range appNames {
 			fmt.Printf("[Info] Refreshing and syncing app: %s\n", appName)
 			if err := syncAppWithPolling(appName); err != nil {
-				return err
+				return nil, err
 			}
 		}
 	} else {
 		// 4. Otherwise, sync apps by ordered regions list
 		orderedRegions := strings.Split(regions, ",")
-
+		// For each region, sync all apps that end with "-<region>"
 		for _, region := range orderedRegions {
 			for _, appName := range appNames {
 				if strings.HasSuffix(appName, "-"+region) {
 					fmt.Printf("[Info] Refreshing and Syncing app: %s\n", appName)
 					if err := syncAppWithPolling(appName); err != nil {
-						return err
+						return nil, err
 					}
 				}
 			}
 		}
 	}
-	return nil
+	return appNames, nil
 }
 
 func syncAppWithPolling(appName string) error {
