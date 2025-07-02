@@ -16,24 +16,24 @@ func RefreshSync(
 	argocdUrl string,
 	argocdUsername string,
 	argocdPassword string,
-) ([]string, error) {
+) (string, []string, error) {
 	// 1. Login to ArgoCD and init client
 	if err := be.InitArgoClientWithLogin("https://"+argocdUrl, argocdUsername, argocdPassword); err != nil {
-		return nil, fmt.Errorf("[Error] Failed to authenticate to ArgoCD: %v", err)
+		return "error", nil, fmt.Errorf("[Error] Failed to authenticate to ArgoCD: %v", err)
 	}
 
 	// 2. Get all apps matching gitId/env
 	appNames := be.GetAppNames(gitId, gitlabPath, env)
 	if len(appNames) == 0 {
-		return nil, fmt.Errorf("[Error] no applications found for gitId: %s and env: %s", gitId, env)
+		return "error", nil, fmt.Errorf("[Error] no applications found for gitId: %s and env: %s", gitId, env)
 	}
 
 	// 3. If no regions specified, sync all apps in appNames as-is
 	if strings.TrimSpace(regions) == "" {
 		for _, appName := range appNames {
 			fmt.Printf("[Info] Refreshing and syncing app: %s\n", appName)
-			if err := syncAppWithPolling(appName); err != nil {
-				return nil, err
+			if status, err := syncAppWithPolling(appName); err != nil {
+				return status, appNames, err
 			}
 		}
 	} else {
@@ -44,26 +44,26 @@ func RefreshSync(
 			for _, appName := range appNames {
 				if strings.HasSuffix(appName, "-"+region) {
 					fmt.Printf("[Info] Refreshing and Syncing app: %s\n", appName)
-					if err := syncAppWithPolling(appName); err != nil {
-						return nil, err
+					if status, err := syncAppWithPolling(appName); err != nil {
+						return status, appNames, err
 					}
 				}
 			}
 		}
 	}
-	return appNames, nil
+	return "error", appNames, nil
 }
 
-func syncAppWithPolling(appName string) error {
+func syncAppWithPolling(appName string) (string, error) {
 	// First perform hard refresh, then sync
 	if err := be.TriggerArgoHardRefreshAndSync(appName); err != nil {
-		return fmt.Errorf("[Error] Failed to trigger hard refresh and sync for %s: %v", appName, err)
+		return "error", fmt.Errorf("[Error] Failed to trigger hard refresh and sync for %s: %v", appName, err)
 	}
 
 	for {
 		status, err := be.GetArgoAppStatus(appName)
 		if err != nil {
-			return fmt.Errorf("[Error] Failed to get status for %s: %v", appName, err)
+			return "error", fmt.Errorf("[Error] Failed to get status for %s: %v", appName, err)
 		}
 
 		// Check operationState first (most important for sync operations)
@@ -73,7 +73,7 @@ func syncAppWithPolling(appName string) error {
 			fmt.Printf("[Info] App %s - OperationState Phase: '%s'\n", appName, phase)
 
 			if phase == "Error" || phase == "Failed" {
-				return fmt.Errorf("[Error] Sync operation failed for %s: %s", appName, status.Status.OperationState.Message)
+				return "error", fmt.Errorf("[Error] Sync operation failed for %s: %s", appName, status.Status.OperationState.Message)
 			}
 
 			// Check if sync completed successfully with operationState
@@ -93,7 +93,7 @@ func syncAppWithPolling(appName string) error {
 
 		// Check for degraded health or failed sync status
 		if status.Status.Health.Status == "Degraded" || status.Status.Sync.Status == "Failed" {
-			return fmt.Errorf("[Error] Sync failed for %s - Health: %s, Sync: %s",
+			return "error", fmt.Errorf("[Error] Sync failed for %s - Health: %s, Sync: %s",
 				appName, status.Status.Health.Status, status.Status.Sync.Status)
 		}
 
@@ -109,5 +109,5 @@ func syncAppWithPolling(appName string) error {
 		time.Sleep(5 * time.Second)
 	}
 
-	return nil
+	return "ok", nil
 }

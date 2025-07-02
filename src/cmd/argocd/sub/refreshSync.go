@@ -26,7 +26,7 @@ var SyncArgocdCmd = &cobra.Command{
 		helpers.LoadConfig()
 
 		// Start the argocd sync
-		_, err := controller.RefreshSync(
+		_, _, err := controller.RefreshSync(
 			gitId,
 			gitlabPath,
 			env,
