@@ -35,7 +35,7 @@ fi
 ############################
 # 4) Get Gateway token     #
 ############################
-echo "[INFO] Requesting gateway token…"
+echo "[INFO] Requesting gateway token..."
 TOKEN=$(curl --silent --fail \
   -X POST "$GATEWAY_URL/api/v1/auth/token" \
   -H "Content-Type: application/json" \
