@@ -5,7 +5,7 @@ set -euo pipefail
 ############################
 # 1) Input argument (env)  #
 ############################
-ENV="$1"  # eg. "prod" oppure "perf"
+ENV="$1"  # eg. "prod" or "perf"
 
 if [[ -z "$ENV" ]]; then
   echo "[ERROR] No environment passed."
