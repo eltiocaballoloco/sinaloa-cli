@@ -1,15 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+
 ############################
 # 1) Input argument (env)  #
 ############################
-ENV="$1"                       # es. "prod" oppure "perf"
+ENV="$1"  # eg. "prod" oppure "perf"
 
 if [[ -z "$ENV" ]]; then
   echo "[ERROR] No environment passed."
   exit 1
 fi
+
 
 ############################
 # 2) Mandatory variables   #
@@ -20,6 +22,7 @@ fi
 : "${CI_PROJECT_ID:?Missing CI_PROJECT_ID}"
 : "${CI_PROJECT_PATH:?Missing CI_PROJECT_PATH}"
 
+
 ############################
 # 3) Ensure jq is present  #
 ############################
@@ -27,6 +30,7 @@ if ! command -v jq >/dev/null; then
   echo "[INFO] Installing jq…"
   apt-get update -qq && apt-get install -yqq jq
 fi
+
 
 ############################
 # 4) Get Gateway token     #
@@ -43,10 +47,17 @@ if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
   exit 1
 fi
 
+
 #############################################
 # 5) Read region for the specific ENV       #
 #############################################
-REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
+if [[ "$ENV" == "prod" ]]; then
+  REGION="prod"
+elif [[ "$ENV" == "prod-backup" ]]; then
+  REGION="backup"
+else
+  REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
+fi
 
 if [[ -z "$REGION" ]]; then
   echo "[ERROR] Region not defined for env '$ENV' in version.json"
@@ -55,15 +66,23 @@ fi
 
 echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
 
+
 ############################
 # 6) Compose JSON payload  #
 ############################
+if [[ "$ENV" == "prod" || "$ENV" == "prod-backup" ]]; then
+  ENV_ARG="prod"
+else
+  ENV_ARG="$ENV"
+fi
+
 BODY=$(jq -n \
-  --arg envs "$ENV" \
+  --arg envs "$ENV_ARG" \
   --arg regions "$REGION" \
   --arg git_id "$CI_PROJECT_ID" \
   --arg gitlab_path "$CI_PROJECT_PATH" \
   '{envs:$envs, git_id:$git_id, gitlab_path:$gitlab_path, regions:$regions}')
+
 
 ############################
 # 7) Call refresh‑sync     #
