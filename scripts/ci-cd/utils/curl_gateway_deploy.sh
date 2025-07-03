@@ -2,6 +2,14 @@
 set -euo pipefail
 
 # --- Input
+INPUT_ENV="$1"
+
+if [[ -z "$INPUT_ENV" ]]; then
+  echo "[ERROR] No environment passed."
+  exit 1
+fi
+
+# --- Input
 GATEWAY_URL="${GATEWAY_URL:-}"
 GATEWAY_USER="${GATEWAY_USER:-}"
 GATEWAY_PASSWORD="${GATEWAY_PASSWORD:-}"
@@ -33,7 +41,7 @@ fi
 
 # --- Read version.json
 echo "[INFO] Reading version.json…"
-ENVS=$(jq -r '.envs' version.json | tr -d '"')
+ENVS=$INPUT_ENV
 REGIONS=$(jq -r '.regions // empty' version.json | tr -d '"')
 
 # --- Compose payload
