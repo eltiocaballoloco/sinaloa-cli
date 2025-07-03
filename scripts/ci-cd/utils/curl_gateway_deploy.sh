@@ -8,7 +8,7 @@ GATEWAY_PASSWORD="${GATEWAY_PASSWORD:-}"
 CI_PROJECT_ID="${CI_PROJECT_ID:-}"
 CI_PROJECT_PATH="${CI_PROJECT_PATH:-}"
 
-# --- Validazione
+# --- Validation
 if [[ -z "$GATEWAY_URL" || -z "$GATEWAY_USER" || -z "$GATEWAY_PASSWORD" || -z "$CI_PROJECT_ID" || -z "$CI_PROJECT_PATH" ]]; then
   echo "[ERROR] Missing required environment variables."
   exit 1
