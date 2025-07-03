@@ -46,19 +46,14 @@ fi
 #############################################
 # 5) Read region for the specific ENV       #
 #############################################
-KEY_ENV="$ENV"
-if [[ "$ENV" == "prod-backup" ]]; then
-  KEY_ENV="prod"
-fi
-
-REGION=$(jq -r --arg env "$KEY_ENV" '.regions[$env] // ""' version.json | xargs)
+REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
 
 if [[ -z "$REGION" ]]; then
   echo "[ERROR] Region not defined for env '$ENV' in version.json"
   exit 1
 fi
 
-echo "[INFO] Env: $ENV  →  Region string: '$REGION'"
+echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
 
 ############################
 # 6) Compose JSON payload  #
