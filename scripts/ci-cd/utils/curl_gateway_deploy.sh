@@ -100,7 +100,9 @@ echo "$RESPONSE" | jq .
 
 STATUS=$(echo "$RESPONSE" | jq -r '.status // "UNKNOWN"')
 if [[ "$STATUS" != "SUCCESS" ]]; then
+  ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // "No error message provided."')
   echo "[ERROR] Sync failed: $STATUS"
+  echo "[ERROR] Message: $ERROR_MSG"
   exit 1
 fi
 
