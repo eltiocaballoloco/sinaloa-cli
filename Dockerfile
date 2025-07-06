@@ -40,7 +40,7 @@ FROM ubuntu:24.04
 
 # Add CA certificates if needed (HTTPS, etc.)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl jq yq make bash git && \
+    apt-get install -y --no-install-recommends ca-certificates openssh-client curl jq yq make bash git && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the build stage and the deploy scripts
