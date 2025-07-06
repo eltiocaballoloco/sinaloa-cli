@@ -1,4 +1,19 @@
-# Stage 1: Build the Go binary
+#
+# ────────────────────────────────────────────────────────────────
+#  STAGE 1 – Extract argocd bianry
+# ────────────────────────────────────────────────────────────────
+#
+FROM quay.io/argoproj/argocd:v3.0.4 AS argocd-base
+
+# Sanity check: the binary exists where expected
+RUN test -f /usr/local/bin/argocd-cmp-server
+
+
+#
+# ────────────────────────────────────────────────────────────────
+#  STAGE 2 – Compile the “sinaloa” CLI binary
+# ────────────────────────────────────────────────────────────────
+#
 FROM golang:tip-20250620-alpine3.21 AS builder
 
 # Set working directory inside the container
@@ -16,7 +31,11 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o sina
 RUN mkdir -p build && mv sinaloa build/
 
 
-# Stage 2: Final ubuntu image
+#
+# ────────────────────────────────────────────────────────────────
+#  STAGE 3 – Final image with Ubuntu base
+# ────────────────────────────────────────────────────────────────
+#
 FROM ubuntu:24.04
 
 # Add CA certificates if needed (HTTPS, etc.)
@@ -34,5 +53,11 @@ RUN chmod +x /usr/local/bin/sinaloa
 # Make all .sh scripts inside /scripts/ci-cd (recursively) executable
 RUN find /scripts/ci-cd -type f -name "*.sh" -exec chmod +x {} \;
 
-# Execute cmd or execute a cmd passed by arg
-CMD ["sinaloa", "--help"]
+# Copy argocd-cmp-server binary from the base image at the correct path
+COPY --from=argocd-base /usr/local/bin/argocd-cmp-server /usr/local/bin/argocd-cmp-server
+RUN chmod +x /usr/local/bin/argocd-cmp-server
+
+# Symlink for compatibility
+RUN mkdir -p /var/run/argocd && ln -s /usr/local/bin/argocd-cmp-server /var/run/argocd/argocd-cmp-server
+
+CMD ["/usr/local/bin/argocd-cmp-server"]
