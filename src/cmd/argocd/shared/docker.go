@@ -45,6 +45,7 @@ func FetchLatestTag(repoUrl string, dockerRepo string) (string, error) {
 }
 
 func getHighestSemverFromTags(tags []docker.TagInfoInternal) (string, error) {
+	helpers.LoadConfig()
 	semverRe := regexp.MustCompile(`^v?(\d+\.\d+\.\d+)$`)
 	var versions []*semver.Version
 	tagToOriginal := make(map[string]string)
@@ -53,20 +54,26 @@ func getHighestSemverFromTags(tags []docker.TagInfoInternal) (string, error) {
 		tagName := strings.TrimSpace(tag.Name)
 
 		if !semverRe.MatchString(tagName) {
-			fmt.Printf("Skipping non-matching tag: %s\n", tagName)
+			if helpers.AppConfig.SINALOA_DEBUG {
+				fmt.Printf("Skipping non-matching tag: %s\n", tagName)
+			}
 			continue
 		}
 
 		matches := semverRe.FindStringSubmatch(tagName)
 		if len(matches) != 2 {
-			fmt.Printf("Skipping malformed tag: %s\n", tagName)
+			if helpers.AppConfig.SINALOA_DEBUG {
+				fmt.Printf("Skipping malformed tag: %s\n", tagName)
+			}
 			continue
 		}
 
 		normalized := matches[1] // e.g., 0.1.0
 		v, err := semver.NewVersion(normalized)
 		if err != nil {
-			fmt.Printf("Skipping invalid semver tag: %s (%v)\n", tagName, err)
+			if helpers.AppConfig.SINALOA_DEBUG {
+				fmt.Printf("Skipping invalid semver tag: %s (%v)\n", tagName, err)
+			}
 			continue
 		}
 
