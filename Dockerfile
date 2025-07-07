@@ -43,6 +43,20 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates openssh-client curl jq yq make bash git && \
     rm -rf /var/lib/apt/lists/*
 
+# Install Helm (v3.11.0) from custom repo
+ENV HELM_URL=http://packages.dalecosta.com/repo/dale-k8s-packages/cli/helm/helm_linux_amd64_v3-11-0.tar.gz
+
+# Fetch helm and install it
+RUN curl -L "$HELM_URL" -o /tmp/helm.tar.gz && \
+    tar -xzf /tmp/helm.tar.gz -C /tmp && \
+    # Typical Helm archive structure: linux-amd64/helm
+    mv /tmp/linux-amd64/helm /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/helm && \
+    rm -rf /tmp/helm.tar.gz /tmp/linux-amd64
+
+# Verify Helm installation (optional sanity check)
+RUN helm version --short
+
 # Copy the binary from the build stage and the deploy scripts
 COPY --from=builder /app/build/sinaloa /usr/local/bin/sinaloa
 COPY --from=builder /app/scripts/ci-cd /scripts/ci-cd
