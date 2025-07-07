@@ -197,7 +197,7 @@ func GetAppNames(gitID, gitlabPath, env string) []string {
 	// Construct the endpoint with proper URL formatting
 	var endpoint string
 	if gitlabPath != "" {
-		endpoint = fmt.Sprintf("/api/v1/applications?repo=git@gitlab.com:%s.git", gitlabPath)
+		endpoint = fmt.Sprintf("/api/v1/applications?repo=https://gitlab.com/%s.git", gitlabPath)
 	} else {
 		endpoint = "/api/v1/applications"
 	}
