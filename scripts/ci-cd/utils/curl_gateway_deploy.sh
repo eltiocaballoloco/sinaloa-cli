@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+
 ############################
 # 1) Input argument (env)  #
 ############################
@@ -51,18 +52,30 @@ fi
 # 5) Read region for the specific ENV       #
 #############################################
 REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
-echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
 
+# If we find in region "backup,main",
+# set the correct region to sync
+if [[ "$REGION" == *"backup,main"* ]]; then
+  if [[ "$ENV" == "prod" ]]; then
+    REGION="main"
+  elif [[ "$ENV" == "prod-backup" ]]; then
+    REGION="backup"
+  fi
+fi
 
-############################
-# 6) Compose JSON payload  #
-############################
+# Set the env
 if [[ "$ENV" == "prod" || "$ENV" == "prod-backup" ]]; then
   ENV_ARG="prod"
 else
   ENV_ARG="$ENV"
 fi
 
+echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
+
+
+############################
+# 6) Compose JSON payload  #
+############################
 BODY=$(jq -n \
   --arg envs "$ENV_ARG" \
   --arg regions "$REGION" \
