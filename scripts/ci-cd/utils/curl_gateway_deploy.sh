@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-
 ############################
 # 1) Input argument (env)  #
 ############################
@@ -51,19 +50,7 @@ fi
 #############################################
 # 5) Read region for the specific ENV       #
 #############################################
-if [[ "$ENV" == "prod" ]]; then
-  REGION="prod"
-elif [[ "$ENV" == "prod-backup" ]]; then
-  REGION="backup"
-else
-  REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
-fi
-
-if [[ -z "$REGION" ]]; then
-  echo "[ERROR] Region not defined for env '$ENV' in version.json"
-  exit 1
-fi
-
+REGION=$(jq -r --arg env "$ENV" '.regions[$env] // ""' version.json | xargs)
 echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
 
 
