@@ -36,12 +36,16 @@ fi
 # 4) Get Gateway token     #
 ############################
 echo "[INFO] Requesting gateway token..."
-TOKEN=$(curl --silent --fail \
+TOKEN=$(curl --silent --show-error --fail \
   -X POST "$GATEWAY_URL/api/v1/auth/token" \
   -H "Content-Type: application/json" \
-  --data "{\"username\":\"$GATEWAY_USER\",\"password\":\"$GATEWAY_PASSWORD\"}" |
-  jq -r '.token')
+  --data "{\"username\":\"$GATEWAY_USER\",\"password\":\"$GATEWAY_PASSWORD\"}" \
+  || { echo "[ERROR] Failed to get token. Check GATEWAY_URL or credentials."; exit 1; })
 
+# Extract the token value from the json
+TOKEN=$(echo "$TOKEN" | jq -r '.token')
+
+# Check token
 if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
   echo "[ERROR] Unable to retrieve token."
   exit 1
@@ -70,7 +74,7 @@ else
   ENV_ARG="$ENV"
 fi
 
-echo "[INFO] Env: $ENV  ->  Region string: '$REGION'"
+echo "[INFO] Env: '$ENV'  ->  Regions: '$REGION'"
 
 
 ############################
@@ -87,23 +91,39 @@ BODY=$(jq -n \
 ############################
 # 7) Call refresh‑sync     #
 ############################
-echo "[INFO] Sending sync request…"
-RESPONSE=$(curl --silent --fail \
-  -X POST "$GATEWAY_URL/api/v1/argocd/refresh-sync" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
+echo "[INFO] Sending the sync request to deploy the apps, please wait..."
+
+RESPONSE=$(curl --silent --show-error --location \
+  --request POST "$GATEWAY_URL/api/v1/argocd/refresh-sync" \
+  --header "Authorization: Bearer $TOKEN" \
+  --header "Content-Type: application/json" \
   --data "$BODY" \
-  --max-time 360)
+  --connect-timeout 30 \
+  --max-time 360
+) || {
+  CODE=$?
+  echo "[ERROR] Curl request failed (exit code $CODE)"
+  echo "[ERROR] Payload was:"
+  echo "$BODY" | jq .
+  exit 1
+}
 
-echo "[DEBUG] Response:"
-echo "$RESPONSE" | jq .
-
-STATUS=$(echo "$RESPONSE" | jq -r '.status // "UNKNOWN"')
-if [[ "$STATUS" != "SUCCESS" ]]; then
-  ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // "No error message provided."')
-  echo "[ERROR] Sync failed: $STATUS"
-  echo "[ERROR] Message: $ERROR_MSG"
+# Verify json response
+if ! echo "$RESPONSE" | jq . >/dev/null 2>&1; then
+  echo "[ERROR] Invalid JSON received from API."
+  echo "$RESPONSE"
   exit 1
 fi
 
-echo "[SUCCESS] Sync completed."
+# Parse status
+STATUS=$(echo "$RESPONSE" | jq -r '.status // "UNKNOWN"')
+MESSAGE=$(echo "$RESPONSE" | jq -r '.message // "No message provided."')
+
+if [[ "$STATUS" != "SUCCESS" ]]; then
+  echo "[ERROR] Sync failed: $STATUS"
+  echo "[ERROR] Message: $MESSAGE"
+  exit 1
+fi
+
+echo "[INFO] Sync completed."
+echo "[INFO] $MESSAGE"

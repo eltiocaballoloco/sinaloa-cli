@@ -1,0 +1,10 @@
+{
+    "version": "0.2.2",
+    "envs": "prod",
+    "regions": {
+        "dev": "",
+        "test": "",
+        "perf": "",
+        "prod": ""
+    }
+}
