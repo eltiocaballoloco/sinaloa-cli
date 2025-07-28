@@ -12,7 +12,7 @@ var VersionCmd = &cobra.Command{
 	Short: "Get the version of sinaloa-cli",
 	Long:  "Get the version of sinaloa-cli. Example: sinaloa version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v1.0.6")
+		fmt.Println("v1.0.7")
 	},
 }
 

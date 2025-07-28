@@ -6,6 +6,11 @@ set -euo pipefail
 # 1) Input argument (env)  #
 ############################
 ENV="$1"  # eg. "prod" or "perf"
+GATEWAY_URL="$2"
+GATEWAY_USER="$3"
+GATEWAY_PASSWORD="$4"
+CI_PROJECT_ID="$5"
+CI_PROJECT_PATH="$6"
 
 if [[ -z "$ENV" ]]; then
   echo "[ERROR] No environment passed."
