@@ -103,8 +103,7 @@ RESPONSE=$(curl --silent --show-error --location \
   --header "Authorization: Bearer $TOKEN" \
   --header "Content-Type: application/json" \
   --data "$BODY" \
-  --connect-timeout 30 \
-  --max-time 360
+  --max-time 600
 ) || {
   CODE=$?
   echo "[ERROR] Curl request failed (exit code $CODE)"
