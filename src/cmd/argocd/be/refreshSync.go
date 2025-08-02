@@ -219,9 +219,9 @@ func GetAppNames(gitID, gitlabPath, env string) []string {
 	for _, app := range apps.Items {
 		// Check if labels exist and match criteria
 		if app.Metadata.Labels != nil {
-			if app.Metadata.Labels["git_id"] == gitID && app.Metadata.Labels["profile"] == env {
+			if app.Metadata.Labels["git_id"] == gitID {
 				// Check if contains the env
-				if strings.Contains(app.Metadata.Name, env) {
+				if strings.Contains(app.Metadata.Name, env+"-") {
 					matchingNames = append(matchingNames, app.Metadata.Name)
 					fmt.Printf("[Info] Found matching app: %s (git_id: %s, profile: %s)\n",
 						app.Metadata.Name, app.Metadata.Labels["git_id"], app.Metadata.Labels["profile"])
