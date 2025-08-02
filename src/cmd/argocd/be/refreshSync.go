@@ -3,6 +3,7 @@ package be
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/eltiocaballoloco/sinaloa-cli/src/helpers"
@@ -219,9 +220,12 @@ func GetAppNames(gitID, gitlabPath, env string) []string {
 		// Check if labels exist and match criteria
 		if app.Metadata.Labels != nil {
 			if app.Metadata.Labels["git_id"] == gitID && app.Metadata.Labels["profile"] == env {
-				matchingNames = append(matchingNames, app.Metadata.Name)
-				fmt.Printf("[Info] Found matching app: %s (git_id: %s, profile: %s)\n",
-					app.Metadata.Name, app.Metadata.Labels["git_id"], app.Metadata.Labels["profile"])
+				// Check if contains the env
+				if strings.Contains(app.Metadata.Name, env) {
+					matchingNames = append(matchingNames, app.Metadata.Name)
+					fmt.Printf("[Info] Found matching app: %s (git_id: %s, profile: %s)\n",
+						app.Metadata.Name, app.Metadata.Labels["git_id"], app.Metadata.Labels["profile"])
+				}
 			}
 		}
 	}
