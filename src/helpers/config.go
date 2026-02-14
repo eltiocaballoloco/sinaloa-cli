@@ -16,6 +16,7 @@ type Config struct {
 	AZURE_DRIVE_ID      string
 	DOCKER_HUB_USER_RWD string
 	DOCKER_HUB_PWD_RWD  string
+	GITHUB_TOKEN        string
 }
 
 var (
@@ -40,5 +41,6 @@ func LoadConfig() {
 		AZURE_DRIVE_ID:      os.Getenv("AZURE_DRIVE_ID"),
 		DOCKER_HUB_USER_RWD: os.Getenv("DOCKER_HUB_USER_RWD"),
 		DOCKER_HUB_PWD_RWD:  os.Getenv("DOCKER_HUB_PWD_RWD"),
+		GITHUB_TOKEN:        os.Getenv("GITHUB_TOKEN"),
 	}
 }

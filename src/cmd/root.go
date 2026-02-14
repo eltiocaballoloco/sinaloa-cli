@@ -3,13 +3,13 @@ package cmd
 import (
 	"os"
 
-	"github.com/spf13/cobra"
-    "github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd"
-    "github.com/eltiocaballoloco/sinaloa-cli/src/cmd/docker"
-
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/argocd"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/azure"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/docker"
+	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/github"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/net"
 	"github.com/eltiocaballoloco/sinaloa-cli/src/cmd/version"
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -29,8 +29,9 @@ func Execute() {
 }
 
 func addSubcommandPalettes() {
-    rootCmd.AddCommand(argocd.ArgocdCmd)
-    rootCmd.AddCommand(docker.DockerCmd)
+	rootCmd.AddCommand(argocd.ArgocdCmd)
+	rootCmd.AddCommand(docker.DockerCmd)
+	rootCmd.AddCommand(github.GithubCmd)
 	rootCmd.AddCommand(azure.AzureCmd)
 	rootCmd.AddCommand(net.NetCmd)
 	rootCmd.AddCommand(version.VersionCmd)
